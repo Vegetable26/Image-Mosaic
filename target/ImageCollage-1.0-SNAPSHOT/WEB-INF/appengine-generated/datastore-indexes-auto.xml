@@ -1,0 +1,5 @@
+<datastore-indexes>
+    <datastore-index kind="Greeting" ancestor="true" source="manual">
+        <property name="date" direction="desc"/>
+    </datastore-index>
+</datastore-indexes>

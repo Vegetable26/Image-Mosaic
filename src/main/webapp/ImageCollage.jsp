@@ -11,6 +11,12 @@
 <%@ page import="com.google.appengine.api.datastore.Key" %>
 <%@ page import="com.google.appengine.api.datastore.KeyFactory" %>
 <%@ page import="com.google.appengine.api.datastore.Query" %>
+<%@ page import="com.google.appengine.api.blobstore.BlobstoreServiceFactory" %>
+<%@ page import="com.google.appengine.api.blobstore.BlobstoreService" %>
+
+<%
+    BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+%>
 
 <html>
 <head>
@@ -20,11 +26,12 @@
 <body>
 
 
-<form action="/upload" method="post">
-<div><input type="file" name="userPic" accept="image/*"/></div>
-<div><input type="text" name="theme"/></div>
-<div><input type="submit" value="Make da fucking collage"/></div>
-</form>
+    <form action="<%= blobstoreService.createUploadUrl("/upload") %>" method="post" enctype="multipart/form-data">
+    <input type="file" name="userPic">
+    <input type="text" name="theme">
+    <input type="submit" value="make da fucking collage">
+    </form>
+
 
 
 </body>
