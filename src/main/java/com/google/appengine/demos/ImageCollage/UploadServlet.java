@@ -1,5 +1,6 @@
 package com.google.appengine.demos.ImageCollage;
 
+
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -11,6 +12,7 @@ import com.google.appengine.api.users.UserServiceFactory;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.awt.image.DataBufferByte;
 import java.util.Date;
 
 import javax.servlet.http.HttpServlet;
@@ -25,10 +27,11 @@ import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 import com.google.appengine.api.blobstore.BlobInfo;
 import com.google.appengine.api.blobstore.BlobInfoFactory;
 
+import com.google.appengine.api.images.*;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-import javax.imageio.ImageIO;
 import java.io.OutputStream;
 
 public class UploadServlet extends HttpServlet {
@@ -47,33 +50,34 @@ public class UploadServlet extends HttpServlet {
         Date date = new Date();
         Key uploadKey = KeyFactory.createKey("uploader", date.toString());
         */
-
+        //get the blob
         Map<String, BlobKey> blobs = blobstoreService.getUploadedBlobs(req);
         BlobKey blobKey = blobs.get("userPic");
         BlobInfo blobInfo = blobstoreService.getBlobInfos(req).get("userPic").get(0);
 
+        //get the image
+        ImageService service = ImageServiceFactory.getImageService();
         long fileSize = blobInfo.getSize();
-
         byte[] imageBytes = blobstoreService.fetchData(blobKey, (long)0, fileSize);
+        Image image = ImageServiceFactory.makeImage(imageBytes);
 
-        InputStream imageStream = new ByteArrayInputStream(imageBytes);
-        BufferedImage image = ImageIO.read(imageStream);
+        //get the collage
+        int depth = Integer.parseInt(req.getParameter("depth"));
+        double threshold = Double.parseDouble(req.getParameter("threshold"));
+        Collage pix = new Collage(image, depth, threshold);
+        Image pixelated = pix.getCollage(10, 10);
 
-        Pixelate pix = new Pixelate(image);
-        BufferedImage pixelated = pix.pixelateImage(30, 30);
 
-        resp.setContentType("image/jpeg");
-        OutputStream out = resp.getOutputStream();
-        ImageIO.write(pixelated, "jpg", out);
-        out.close();
+
 
         /*
         if (blobKey == null) {
             resp.sendRedirect("/");
-        } else {
+        }
+        else {
             resp.sendRedirect("/serve?blob-key=" + blobKey.getKeyString());
-        }*/
-
+        }
+        */
         /*Entity uploadedImage = new Entity("upload", uploadKey);
         uploadedImage.setProperty("userPic", userPic);
         uploadedImage.setProperty("date", date);
@@ -81,7 +85,7 @@ public class UploadServlet extends HttpServlet {
 
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         datastore.put(uploadedImage);
-
-        //resp.sendRedirect("/guestbook.jsp?guestbookName=" + guestbookName);*/
+        */
+        resp.sendRedirect(imageUrl);
     }
 }

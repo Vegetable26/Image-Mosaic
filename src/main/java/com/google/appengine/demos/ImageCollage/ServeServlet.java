@@ -19,10 +19,10 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-import javax.imageio.ImageIO;
 import java.io.OutputStream;
 
 public class ServeServlet extends HttpServlet {
+
     private BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
 
     @Override
@@ -34,7 +34,7 @@ public class ServeServlet extends HttpServlet {
         long fileSize = blobInfo.getSize();
 
         byte[] imageBytes = blobstoreService.fetchData(blobKey, (long)0, fileSize);
-
+/*
         InputStream imageStream = new ByteArrayInputStream(imageBytes);
         BufferedImage image = ImageIO.read(imageStream);
 
@@ -42,8 +42,8 @@ public class ServeServlet extends HttpServlet {
         OutputStream out = resp.getOutputStream();
         ImageIO.write(image, "jpg", out);
         out.close();
+        */
 
-        //resp.sendRedirect("ShowBufferedImage.jsp");
 
     }
 }

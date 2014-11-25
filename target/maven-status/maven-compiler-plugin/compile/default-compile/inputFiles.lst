@@ -1,4 +1,7 @@
-/Users/nich/Documents/ImageCollage/src/main/java/com/google/appengine/demos/ImageCollage/ServeServlet.java
-/Users/nich/Documents/ImageCollage/src/main/java/com/google/appengine/demos/ImageCollage/Pixelate.java
+/Users/nich/Documents/ImageCollage/src/main/java/com/google/appengine/demos/ImageCollage/Collage.java
 /Users/nich/Documents/ImageCollage/src/main/java/com/google/appengine/demos/ImageCollage/UploadServlet.java
+/Users/nich/Documents/ImageCollage/src/main/java/com/google/appengine/demos/ImageCollage/ProcessedImage.java
 /Users/nich/Documents/ImageCollage/src/main/java/com/google/appengine/demos/ImageCollage/ImageCollageServlet.java
+/Users/nich/Documents/ImageCollage/src/main/java/com/google/appengine/demos/ImageCollage/ServeServlet.java
+/Users/nich/Documents/ImageCollage/src/main/java/com/google/appengine/demos/ImageCollage/Crawler.java
+/Users/nich/Documents/ImageCollage/src/main/java/com/google/appengine/demos/ImageCollage/CrawlerServlet.java

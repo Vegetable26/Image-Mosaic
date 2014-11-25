@@ -1,4 +1,5 @@
 com/google/appengine/demos/ImageCollage/ServeServlet.class
-com/google/appengine/demos/ImageCollage/UploadServlet.class
-com/google/appengine/demos/ImageCollage/Pixelate.class
+com/google/appengine/demos/ImageCollage/ProcessedImage.class
+com/google/appengine/demos/ImageCollage/Crawler.class
 com/google/appengine/demos/ImageCollage/ImageCollageServlet.class
+com/google/appengine/demos/ImageCollage/CrawlerServlet.class
