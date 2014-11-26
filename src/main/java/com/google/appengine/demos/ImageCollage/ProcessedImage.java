@@ -1,21 +1,33 @@
 package com.google.appengine.demos.ImageCollage;
 
-import java.applet.Applet;
-import com.google.appengine.api.images.*;
-import java.io.*;
-import java.net.URL;
+import com.flickr4java.flickr.Flickr;
+import com.flickr4java.flickr.people.PeopleInterface;
 import com.flickr4java.flickr.photos.*;
+import com.google.appengine.api.images.*;
+import com.google.appengine.api.urlfetch.HTTPResponse;
+import com.google.appengine.api.urlfetch.URLFetchService;
+import com.google.appengine.api.urlfetch.URLFetchServiceFactory;
 
+
+
+import java.net.URL;
+import java.net.MalformedURLException;
+import java.io.InputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.nio.ByteBuffer;
 // Big changes: newest version
 
-import
-import java.io.*;
-import java.net.URL;
-import javax.imageio.*;
-import com.flickr4java.flickr.people.PeopleInterface;
-import com.flickr4java.flickr.Flickr;
+public class ProcessedImage{
 
-public class ProcessedImage implements IProcessedImage{
+    private Image img;
+    private int width; // Width of the base image
+    private int height; // Height of the base image
+    private String username;
+    private String url;
+    private double[] average = new double[3];
+    private double[] rgbHistogram;
+    ImagesService imagesService = ImagesServiceFactory.getImagesService();
 
     // To process a Photo retrieved from flickr, used in Crawler.find()
     public ProcessedImage(Photo photo, Flickr f){
@@ -25,7 +37,7 @@ public class ProcessedImage implements IProcessedImage{
         readUsername(photo,f);
     }
 
-    // To process a BufferedImage
+    // To process a Image
     public ProcessedImage(Image photo){
         img = photo;
         getDim();
@@ -36,33 +48,61 @@ public class ProcessedImage implements IProcessedImage{
 
     // To process an image from the Crawler.query()
     public ProcessedImage(String url, String inputUser){
+        this.url = url;
         readImage(url);
         getDim();
         username = inputUser;
     }
 
+
+
     private void readImage(String myURL) {
-        URL url = new URL(myURL); // read the url
+        /*
+        URL urlObj = null;
+        try {
+            urlObj = new URL(myURL); // read the url
+        }
+        catch (MalformedURLException e){
+            e.printStackTrace();
+        }
         ByteArrayOutputStream bais = new ByteArrayOutputStream();
         InputStream is = null;
-        byte[] byteChunk = new byte[4096]; // Or whatever size you want to read in at a time.
+        //byte[] byteChunk = new byte[4096]; // Or whatever size you want to read in at a time.
         try {
-            is = url.openStream ();
+            is = urlObj.openStream ();
             int n;
-            while ( (n = is.read(byteChunk)) > 0 ) {
-                bais.write(byteChunk, 0, n);
+            while ( (n = is.read()) > -1 ) {
+                bais.write(n);
             }
         }
         catch (IOException e) {
-            System.err.printf ("Failed while reading bytes from %s: %s", url.toExternalForm(), e.getMessage());
             e.printStackTrace ();
             // Perform any other exception handling that's appropriate.
         }
-        finally {
-            if (is != null) { is.close(); }
+        try{
+            if (is != null){
+                is.close();
+            }
         }
-        img = ImageServiceFactor.makeImage(btyeChunk);
-    }
+        catch (IOException e){
+            e.printStackTrace();
+        }
+        ByteBuffer buff = ByteBuffer.put(bais.toByteArray());
+        GcsFilename gcsName = new GcsFilename("plucky-respect-765.appspot.com", url);
+        gcs.createOrReplace(gcsName, GcsFileOptions.Builder().build(), buff);
+        img =
+        */
+        URLFetchService fetchService = URLFetchServiceFactory.getURLFetchService();
+        try {
+            HTTPResponse fetchResponse = fetchService.fetch(new URL(myURL));
+            img = ImagesServiceFactory.makeImage(fetchResponse.getContent());
+        }
+        catch (IOException e){
+            e.printStackTrace();
+        }
+
+
+        }
 
     private void readUsername(Photo photo, Flickr f){
         try {
@@ -89,6 +129,11 @@ public class ProcessedImage implements IProcessedImage{
     //if forBlock is true, we only want to make the RGB histogram for the specified area
 
     public double[] getRGBHistogram(boolean forBlock, int firstX, int firstY, int partitionHeight, int partitionWidth){
+        Image getRGBHistForMe;
+        if (forBlock){
+            getRGBHistForMe = getBlock(firstX, firstY, partitionHeight, partitionWidth);
+        }
+        /*
         double[] rgbHist = new double[24];
         for (int j = 0; j < (forBlock ? partitionHeight : height); j++){
             for (int i = 0; i < (forBlock ? partitionWidth : width); i++){
@@ -100,11 +145,30 @@ public class ProcessedImage implements IProcessedImage{
                 }
             }
         }
-        return normalizeArray(rgbHist);
+        */
+        else{
+            getRGBHistForMe = img;
+        }
+        return normalizeArray(makeRGBHistogramFromImage(getRGBHistForMe));
     }
 
+    private double[] makeRGBHistogramFromImage(Image image){
+        int[][] histogram = imagesService.histogram(image);
+        double[] rgbHistogram = new double[24];
+        for (int color = 0; color < 3; color++){
+            for (int magnitude = 0; magnitude < 8; magnitude++){
+                double sum = 0;
+                for (int j = magnitude*32; j < magnitude*32 + 32; j++){
+                    sum+= histogram[color][j];
+                }
+                rgbHistogram[color*8+magnitude] = sum;
+            }
+        }
+        return rgbHistogram;
+    }
 
-    private double[] findAverage(int firstX, int firstY, int partitionHeight, int partitionWidth){
+    public double getVariance(boolean forBlock, int firstX, int firstY, int partitionHeight, int partitionWidth){
+        /*
         // Returns an array containing the average (pixel integer) and sum of the RGB variances.
         for(int k = 0; k<partitionWidth; k++){ //Iterates over the partition by columns
             for(int l = 0; l<partitionHeight; l++){
@@ -119,9 +183,52 @@ public class ProcessedImage implements IProcessedImage{
             average[h] = average[h]/(partitionHeight*partitionWidth); // Divides by the number of pixels in the partition
         }
         return average;
+        */
+        Image getVarForMe;
+        if (forBlock){
+            getVarForMe = getBlock(firstX, firstY, partitionHeight, partitionWidth);
+        }
+        else{
+            getVarForMe = img;
+        }
+        return getVarianceFromImage(getVarForMe);
     }
 
 
+    private double getVarianceFromImage(Image image){
+        int[][] histogram = imagesService.histogram(image);
+        double[] average = new double[3];
+        double[] vars = new double[3];
+        //get the sum for each row
+        for (int color = 0; color < 3; color++){
+            for (int bin = 0; bin < 256; bin++){
+                average[color] += histogram[color][bin];
+            }
+        }
+        //get the variance for each color channel
+        for (int color = 0; color < 3; color++){
+            average[color] /= 256;
+            for (int bin = 0; bin < 256; bin++){
+                vars[color] += (Math.pow(histogram[color][bin], 2) - Math.pow(average[color], 2));
+            }
+        }
+        //sum the variances
+        double variance = 0;
+        for (double var : vars){
+            variance += Math.pow(var, 2);
+        }
+        //square root the variance
+        return Math.sqrt(variance);
+
+
+    }
+
+    private Image getBlock(int firstX, int firstY, int partitionHeight, int partitionWidth){
+        Transform cropBlock = ImagesServiceFactory.makeCrop((float)firstX/width, (float)firstY/height, (float)(firstX+partitionWidth)/width, (float)(firstY+partitionHeight)/height);
+        return imagesService.applyTransform(cropBlock, img);
+    }
+
+/*
     private int[] RGBArray(int code){
         // Converts a pixel integer into a tuple[r,b,g]
         int[] triple = new int[3];
@@ -144,11 +251,12 @@ public class ProcessedImage implements IProcessedImage{
     public double[] getAverage(){
         return average;
     }
+*/
 
     // Scales an image to the given dimensions (x,y)
     public Image getScaled(int x, int y){
-        Transform scaleTransform = ImageFactoryService.makeResize(x, y);
-        Image scaled = ImageServiceFactory.getImageService().applyTransform(scaleTransform, img);
+        Transform scaleTransform = ImagesServiceFactory.makeResize(x, y);
+        Image scaled = imagesService.applyTransform(scaleTransform, img);
         return img;
     }
 
@@ -164,4 +272,7 @@ public class ProcessedImage implements IProcessedImage{
         return normalized;
     }
 
+    public Image getImage(){
+        return img;
+    }
 }

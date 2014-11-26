@@ -1,28 +1,13 @@
 package com.google.appengine.demos.ImageCollage;
 
-import java.util.List;
-import com.flickr4java.flickr.*;
-import com.flickr4java.flickr.photos.*;
-import com.flickr4java.flickr.test.TestInterface;
-import com.flickr4java.flickr.photos.licenses.*;
-import java.io.*;
-import be.hogent.tarsos.lsh.families.EuclidianHashFamily;
 import be.hogent.tarsos.lsh.Index;
 import be.hogent.tarsos.lsh.Vector;
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.KeyFactory;
-
-
-import com.google.appengine.api.datastore.Query.Filter;
-import com.google.appengine.api.datastore.Query.FilterPredicate;
-import com.google.appengine.api.datastore.Query.FilterOperator;
-import com.google.appengine.api.datastore.Query.CompositeFilter;
-import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
-import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.datastore.PreparedQuery;
+import be.hogent.tarsos.lsh.families.EuclidianHashFamily;
+import com.flickr4java.flickr.*;
+import com.flickr4java.flickr.photos.*;
+import com.flickr4java.flickr.photos.licenses.*;
+import com.google.appengine.api.datastore.*;
+import java.util.List;
 
 
 public class Crawler {
@@ -65,11 +50,13 @@ public class Crawler {
 
     //inserts all of the photos in the list to the index
     public void addToDatastore(PhotoList<Photo> photos){
+
         for (Photo pic : photos){
             ProcessedImage processed = new ProcessedImage(pic, f);
             double[] rgbHist = processed.getRGBHistogram(false, 0, 0, 0, 0);
 
             String key = processed.getUrl()+" "+processed.getUsername();
+            System.out.println("The key is "+key);
             Entity flickrPic = new Entity("flickrPic", key);
             for (int i = 0; i < rgbHist.length; i++){
                 double binVal = rgbHist[i];

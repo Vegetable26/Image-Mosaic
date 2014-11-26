@@ -35,7 +35,7 @@
     <div><input type="text" name="threshold"></div>
     <div>enter the max depth</div>
     <div><input type="text" name="depth"></div>
-    <div><input type="submit" value="make da fucking collage"></div>
+    <div><input type="submit" value="make da collage"></div>
     </form>
 
     <h3>Populate the index</h3>
@@ -44,7 +44,7 @@
     <div><input type="text" name="searchParam"></div>
     <div>how many of these images should we pull</div>
     <div><input type="text" name="howMany"></div>
-    <div><input type="submit" value="crawl this shiet"></div>
+    <div><input type="submit" value="crawl this"></div>
 
     </form>
 

@@ -1,38 +1,15 @@
 package com.google.appengine.demos.ImageCollage;
 
 
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.KeyFactory;
-import com.google.appengine.api.users.User;
-import com.google.appengine.api.users.UserService;
-import com.google.appengine.api.users.UserServiceFactory;
-
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.awt.image.DataBufferByte;
-import java.util.Date;
-
+import com.google.appengine.api.blobstore.*;
+import com.google.appengine.api.images.*;
+import java.io.ByteArrayOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Random;
-import java.util.Map;
-
-import com.google.appengine.api.blobstore.BlobKey;
-import com.google.appengine.api.blobstore.BlobstoreService;
-import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
-import com.google.appengine.api.blobstore.BlobInfo;
-import com.google.appengine.api.blobstore.BlobInfoFactory;
-
-import com.google.appengine.api.images.*;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
+import java.util.Map;
 
 public class UploadServlet extends HttpServlet {
     private BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
@@ -53,18 +30,13 @@ public class UploadServlet extends HttpServlet {
         //get the blob
         Map<String, BlobKey> blobs = blobstoreService.getUploadedBlobs(req);
         BlobKey blobKey = blobs.get("userPic");
-        BlobInfo blobInfo = blobstoreService.getBlobInfos(req).get("userPic").get(0);
-
-        //get the image
-        ImageService service = ImageServiceFactory.getImageService();
-        long fileSize = blobInfo.getSize();
-        byte[] imageBytes = blobstoreService.fetchData(blobKey, (long)0, fileSize);
-        Image image = ImageServiceFactory.makeImage(imageBytes);
+        Image image = ImagesServiceFactory.makeImage(getData(blobKey));
 
         //get the collage
         int depth = Integer.parseInt(req.getParameter("depth"));
         double threshold = Double.parseDouble(req.getParameter("threshold"));
         Collage pix = new Collage(image, depth, threshold);
+        System.out.println("made the collage object");
         Image pixelated = pix.getCollage(10, 10);
 
 
@@ -86,6 +58,24 @@ public class UploadServlet extends HttpServlet {
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         datastore.put(uploadedImage);
         */
-        resp.sendRedirect(imageUrl);
+        //resp.sendRedirect(imageUrl);
+    }
+
+    private byte[] getData(BlobKey blobKey) {
+        InputStream input;
+        byte[] oldImageData = null;
+        try {
+            input = new BlobstoreInputStream(blobKey);
+            ByteArrayOutputStream bais = new ByteArrayOutputStream();
+            byte[] byteChunk = new byte[4096];
+            int n;
+            while ((n = input.read(byteChunk)) > 0) {
+                bais.write(byteChunk, 0, n);
+            }
+            oldImageData = bais.toByteArray();
+        } catch (IOException e) {}
+
+        return oldImageData;
+
     }
 }

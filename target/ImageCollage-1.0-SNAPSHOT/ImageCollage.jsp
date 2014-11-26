@@ -25,14 +25,28 @@
 
 <body>
 
-
+    <h3>Make a Collage</h3>
     <form action="<%= blobstoreService.createUploadUrl("/upload") %>" method="post" enctype="multipart/form-data">
-    <input type="file" name="userPic">
-    <input type="text" name="theme">
-    <input type="submit" value="make da fucking collage">
+    <div>Choose the image you want to collage-ify</div>
+    <div><input type="file" name="userPic"></div>
+    <div>Choose a theme for the collage</div>
+    <div><input type="text" name="theme"></div>
+    <div>enter the threshold</div>
+    <div><input type="text" name="threshold"></div>
+    <div>enter the max depth</div>
+    <div><input type="text" name="depth"></div>
+    <div><input type="submit" value="make da collage"></div>
     </form>
 
+    <h3>Populate the index</h3>
+    <form action="/crawl" method="post">
+    <div>What should we search flickr for</div>
+    <div><input type="text" name="searchParam"></div>
+    <div>how many of these images should we pull</div>
+    <div><input type="text" name="howMany"></div>
+    <div><input type="submit" value="crawl this"></div>
 
+    </form>
 
 </body>
 </html>
