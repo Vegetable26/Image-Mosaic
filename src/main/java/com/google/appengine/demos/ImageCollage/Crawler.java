@@ -113,7 +113,7 @@ public class Crawler {
     //returns the key (url+ " " + username) for the closest vector to rgbHistogram in Index
     public String query(double[] rgbHistogram){
         Vector vector = new Vector("", rgbHistogram);
-        List<Vector> closest = index.query(vector, 1);
+        List<Vector> closest = index.query(vector, 10);
         return closest.get(0).getKey();
     }
 

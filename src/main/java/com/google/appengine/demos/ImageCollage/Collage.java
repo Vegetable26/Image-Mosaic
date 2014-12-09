@@ -20,6 +20,7 @@ public class Collage {
     private  Crawler crawler = new Crawler();
 
     public Collage(Image inputImg, int depth, double inputThresh){
+        crawler.buildIndex();
         img = inputImg;
         processedImage = new ProcessedImage(img);
         setMaxDepth(depth);
