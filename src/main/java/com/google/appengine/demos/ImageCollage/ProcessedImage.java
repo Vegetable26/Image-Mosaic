@@ -27,6 +27,7 @@ public class ProcessedImage{
     private String url;
     private double[] average = new double[3];
     private double[] rgbHistogram;
+    private byte[] imageBytes;
     ImagesService imagesService = ImagesServiceFactory.getImagesService();
 
     // To process a Photo retrieved from flickr, used in Crawler.find()
@@ -131,7 +132,7 @@ public class ProcessedImage{
     public double[] getRGBHistogram(boolean forBlock, int firstX, int firstY, int partitionHeight, int partitionWidth){
         Image getRGBHistForMe;
         if (forBlock){
-            getRGBHistForMe = getBlock(firstX, firstY, partitionHeight, partitionWidth);
+            getRGBHistForMe = getBlock(firstX, firstY, partitionHeight, partitionWidth).getImage();
         }
         /*
         double[] rgbHist = new double[24];
@@ -186,7 +187,7 @@ public class ProcessedImage{
         */
         Image getVarForMe;
         if (forBlock){
-            getVarForMe = getBlock(firstX, firstY, partitionHeight, partitionWidth);
+            getVarForMe = getBlock(firstX, firstY, partitionHeight, partitionWidth).getImage();
         }
         else{
             getVarForMe = img;
@@ -223,9 +224,10 @@ public class ProcessedImage{
 
     }
 
-    private Image getBlock(int firstX, int firstY, int partitionHeight, int partitionWidth){
+    public ProcessedImage getBlock(int firstX, int firstY, int partitionHeight, int partitionWidth){
         Transform cropBlock = ImagesServiceFactory.makeCrop((float)firstX/width, (float)firstY/height, (float)(firstX+partitionWidth)/width, (float)(firstY+partitionHeight)/height);
-        return imagesService.applyTransform(cropBlock, img);
+        Image cropped = ImagesServiceFactory.makeImage(img.getImageBytes());
+        return new ProcessedImage(imagesService.applyTransform(cropBlock, cropped));
     }
 
 /*
@@ -255,9 +257,9 @@ public class ProcessedImage{
 
     // Scales an image to the given dimensions (x,y)
     public Image getScaled(int x, int y){
-        Transform scaleTransform = ImagesServiceFactory.makeResize(x, y);
+        Transform scaleTransform = ImagesServiceFactory.makeResize(x, y, true);
         Image scaled = imagesService.applyTransform(scaleTransform, img);
-        return img;
+        return scaled;
     }
 
     private double[] normalizeArray(double[] rgbHist){

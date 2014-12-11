@@ -28,6 +28,10 @@ public class Collage {
         width = inputImg.getWidth();
         varianceThreshhold =  inputThresh;
         imgService = ImagesServiceFactory.getImagesService();
+        System.out.println("Starting to pixelate");
+        System.out.println("width is"+ width);
+        System.out.println("height is"+ height);
+        System.out.println("Depth is"+depth);
     }
     /*
     public Pixelate(String url,int depth,double inputThresh){
@@ -50,48 +54,65 @@ public class Collage {
             // This is necessary for the recursive variance formula
         }
         // Creates a blank image of the same size as the base image
-        for(int i = 0; i<Math.ceil((double) width / partitionWidth);i++){ // Splits the image into partition-size columns
-            for(int j = 0; j<Math.ceil((double) height / partitionHeight);j++){	 // Splits the image into partition-size columns
-                System.out.println("looking at the highest level partitions");
-                colorBlock(i*partitionWidth,j*partitionHeight,partitionHeight,partitionWidth,0);
+        //
+        // for(int i = 0; i<Math.ceil((double) width / partitionWidth);i++){ // Splits the image into partition-size columns
+            //for(int j = 0; j<Math.ceil((double) height / partitionHeight);j++){	 // Splits the image into partition-size columns
+                return colorBlock(0 , 0, height, width, 0, processedImage);
                 // Colors each partition of the graph
-            }
-        }
-        Image newImage = imgService.composite(listComposites,width,height,0);
-        return newImage;
+            //}
+        //}
+        //Image newImage = imgService.composite(listComposites,width,height,0);
+        //return newImage;
     }
 
-    public  void colorBlock(int firstX, int firstY, int partitionHeight, int partitionWidth, int depth){
+    public Image colorBlock(int firstX, int firstY, int partitionHeight, int partitionWidth, int depth, ProcessedImage colorMe){
         // Depth tracks how many recursions down the current image is
-
         if(firstX<width && firstY<height) {
             boolean isBest = true;
             if (depth < maxDepth) {
                 int halfWidth = partitionWidth / 2;
                 int halfHeight = partitionHeight / 2;
-                double original = processedImage.getVariance(true, firstX, firstY, Math.min(partitionHeight, height - firstY - 1), Math.min(partitionWidth, width - firstX - 1));
+                double original = colorMe.getVariance(false, firstX, firstY, Math.min(partitionHeight, height - firstY - 1), Math.min(partitionWidth, width - firstX - 1));
                 if (original > varianceThreshhold){
+                    ArrayList<Composite> composites = new ArrayList<Composite>();
                     isBest = false;
                     depth++;
-                    colorBlock(firstX, firstY, partitionHeight - halfHeight, halfWidth, depth); // Upper Left
-                    colorBlock(firstX + halfWidth, firstY, partitionHeight - halfHeight, partitionWidth - halfWidth, depth); // Upper Right
-                    colorBlock(firstX, firstY + halfHeight, halfHeight, halfWidth, depth); // Lower Left
-                    colorBlock(firstX + halfWidth, firstY + halfHeight, halfHeight, partitionWidth - halfWidth, depth); // Lower Right
+                    Image upperLeft = colorBlock(firstX, firstY, partitionHeight - halfHeight, halfWidth, depth, colorMe.getBlock(0, 0, partitionHeight - halfHeight, halfWidth)); // Upper Left
+                    Image upperRight = colorBlock(firstX + halfWidth, firstY, partitionHeight - halfHeight, partitionWidth - halfWidth, depth, colorMe.getBlock(halfWidth, 0, partitionHeight - halfHeight, partitionWidth - halfWidth)); // Upper Right
+                    Image lowerLeft = colorBlock(firstX, firstY + halfHeight, halfHeight, halfWidth, depth, colorMe.getBlock(0, halfHeight, halfHeight, halfWidth)); // Lower Left
+                    Image lowerRight = colorBlock(firstX + halfWidth, firstY + halfHeight, halfHeight, partitionWidth - halfWidth, depth, colorMe.getBlock(halfWidth, halfHeight, halfHeight, partitionWidth - halfWidth)); // Lower Right
+
+                    composites.add(ImagesServiceFactory.makeComposite(upperLeft,0,0,1f, Composite.Anchor.TOP_LEFT));
+
+                    composites.add(ImagesServiceFactory.makeComposite(upperRight, halfWidth, 0, 1f, Composite.Anchor.TOP_LEFT));
+
+                    composites.add(ImagesServiceFactory.makeComposite(lowerLeft,0, halfHeight,1f,Composite.Anchor.TOP_LEFT));
+
+                    composites.add(ImagesServiceFactory.makeComposite(lowerRight,halfWidth, halfHeight,1f,Composite.Anchor.TOP_LEFT));
+
+                    System.out.println("At depth"+depth+"this is compositing"+composites.size()+"images" + firstX +',' +firstY);
+
+                    return imgService.composite(composites,partitionWidth+1,partitionHeight+1,0);
+                }
+                else{
+                    System.out.println("We don't want to go deeper; just draw it starting at "+firstX+",");
+
+                    return colorIn(firstX,firstY, partitionHeight, partitionWidth);
                 }
             }
-            if (isBest) {
-                colorIn(firstX,firstY,Math.min(partitionHeight,height-firstY-1),Math.min(partitionWidth,width-firstX-1));
-                // drawBorder(newImage, firstX, firstY, Math.min(partitionHeight,height-firstY-1), Math.min(partitionWidth,width-firstX-1));
+            else {
+                return colorIn(firstX,firstY,partitionHeight, partitionWidth);
+
             }
         }
+        return colorIn(firstX,firstY, partitionHeight, partitionWidth);
     }
-    private void colorIn( int firstX, int firstY, int partitionHeight, int partitionWidth){
+    private Image colorIn( int firstX, int firstY, int partitionHeight, int partitionWidth){
         // Have to perform a query
-        System.out.println("trying to color shit in");
         String[] urlAndUsername = crawler.query(processedImage.getRGBHistogram(true,firstX,firstY,partitionHeight,partitionWidth)).split(" ");
         Image fillIn = new ProcessedImage(urlAndUsername[0],urlAndUsername[1]).getScaled(partitionWidth,partitionHeight);
-        Composite aPaste = ImagesServiceFactory.makeComposite(fillIn, firstX, firstY, 1f, Composite.Anchor.TOP_LEFT);
-        listComposites.add(aPaste);
+        //Composite aPaste = ImagesServiceFactory.makeComposite(fillIn, firstX, firstY, 1f, Composite.Anchor.TOP_LEFT);
+        return fillIn;
     }
 
 

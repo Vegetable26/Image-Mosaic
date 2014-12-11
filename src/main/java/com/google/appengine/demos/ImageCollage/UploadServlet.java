@@ -10,6 +10,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
+import com.google.appengine.api.files.*;
+import java.nio.ByteBuffer;
+import java.io.FileNotFoundException;
+
+
 
 public class UploadServlet extends HttpServlet {
     private BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
@@ -31,25 +36,19 @@ public class UploadServlet extends HttpServlet {
         Map<String, BlobKey> blobs = blobstoreService.getUploadedBlobs(req);
         BlobKey blobKey = blobs.get("userPic");
         Image image = ImagesServiceFactory.makeImage(getData(blobKey));
-
+        ImagesService imgService = ImagesServiceFactory.getImagesService();
         //get the collage
         int depth = Integer.parseInt(req.getParameter("depth"));
         double threshold = Double.parseDouble(req.getParameter("threshold"));
         Collage pix = new Collage(image, depth, threshold);
         System.out.println("made the collage object");
-        Image pixelated = pix.getCollage(10, 10);
+        int size = Integer.parseInt(req.getParameter("size"));
+        Image pixelated = pix.getCollage(size, size);
 
+        String url = imgService.getServingUrl(ServingUrlOptions.Builder.withBlobKey(toBlobstore(pixelated)));
+        //resp.sendRedirect("/serve?blob-key=" + toBlobstore(pixelated).getKeyString());
+        resp.sendRedirect(url);
 
-
-
-        /*
-        if (blobKey == null) {
-            resp.sendRedirect("/");
-        }
-        else {
-            resp.sendRedirect("/serve?blob-key=" + blobKey.getKeyString());
-        }
-        */
         /*Entity uploadedImage = new Entity("upload", uploadKey);
         uploadedImage.setProperty("userPic", userPic);
         uploadedImage.setProperty("date", date);
@@ -77,5 +76,29 @@ public class UploadServlet extends HttpServlet {
 
         return oldImageData;
 
+    }
+
+    public static BlobKey toBlobstore(Image uploadMe) throws FileNotFoundException,     FinalizationException, LockException, IOException {
+        try {
+            // Get a file service
+            FileService fileService = FileServiceFactory.getFileService();
+
+            // Create a new Blob file with mime-type "image/png"
+            AppEngineFile file = fileService.createNewBlobFile("image/jpeg");// png
+
+            // Open a channel to write to it
+            boolean lock = true;
+            FileWriteChannel writeChannel = fileService.openWriteChannel(file, lock);
+
+            // This time we write to the channel directly
+            writeChannel.write(ByteBuffer.wrap
+                    (uploadMe.getImageData()));
+
+            // Now finalize
+            writeChannel.closeFinally();
+            return fileService.getBlobKey(file);
+        }
+        catch (Exception e){ e.printStackTrace();}
+        return null;
     }
 }

@@ -81,12 +81,15 @@ public class Crawler {
     public void buildIndex(){
         Query getAll = new Query("flickrPic");
         PreparedQuery allPics = datastore.prepare(getAll);
+        int i = 0;
         for (Entity result : allPics.asIterable()){
             double[] rgbHist = getArrayFromEntity(result);
             String key = result.getKey().getName();
             Vector vec = new Vector(key, rgbHist);
             index.index(vec);
+            i++;
         }
+        System.out.println("Added " + i + " photos to the LSH.");
     }
 
     public void updateIndex(){
