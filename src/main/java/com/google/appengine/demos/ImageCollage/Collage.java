@@ -26,6 +26,14 @@ public class Collage {
         setMaxDepth(depth);
         height = inputImg.getHeight();
         width = inputImg.getWidth();
+        int limit = 1500000;
+        if (height*width > limit){
+            double scalingFactor = (double)limit/(height*width);
+            img = processedImage.getScaled((int)(scalingFactor*width), (int)(scalingFactor*height));
+            processedImage = new ProcessedImage(img);
+            height = img.getHeight();
+            width = img.getWidth();
+        }
         varianceThreshhold =  inputThresh;
         imgService = ImagesServiceFactory.getImagesService();
         System.out.println("Starting to pixelate");
@@ -47,12 +55,8 @@ public class Collage {
         maxDepth = input;
     }
 
-    public Image getCollage(int partitionHeight, int partitionWidth){
+    public Image getCollage(){
         // Pixelates the image
-        if(partitionHeight%2  !=0 || partitionWidth %2!=0){
-            System.out.println("Please use a multiple of 8 for your width/height");
-            // This is necessary for the recursive variance formula
-        }
         // Creates a blank image of the same size as the base image
         //
         // for(int i = 0; i<Math.ceil((double) width / partitionWidth);i++){ // Splits the image into partition-size columns
@@ -81,18 +85,17 @@ public class Collage {
                     Image upperRight = colorBlock(firstX + halfWidth, firstY, partitionHeight - halfHeight, partitionWidth - halfWidth, depth, colorMe.getBlock(halfWidth, 0, partitionHeight - halfHeight, partitionWidth - halfWidth)); // Upper Right
                     Image lowerLeft = colorBlock(firstX, firstY + halfHeight, halfHeight, halfWidth, depth, colorMe.getBlock(0, halfHeight, halfHeight, halfWidth)); // Lower Left
                     Image lowerRight = colorBlock(firstX + halfWidth, firstY + halfHeight, halfHeight, partitionWidth - halfWidth, depth, colorMe.getBlock(halfWidth, halfHeight, halfHeight, partitionWidth - halfWidth)); // Lower Right
-
                     composites.add(ImagesServiceFactory.makeComposite(upperLeft,0,0,1f, Composite.Anchor.TOP_LEFT));
 
-                    composites.add(ImagesServiceFactory.makeComposite(upperRight, halfWidth, 0, 1f, Composite.Anchor.TOP_LEFT));
+                    composites.add(ImagesServiceFactory.makeComposite(upperRight, halfWidth*2, 0, 1f, Composite.Anchor.TOP_LEFT));
 
-                    composites.add(ImagesServiceFactory.makeComposite(lowerLeft,0, halfHeight,1f,Composite.Anchor.TOP_LEFT));
+                    composites.add(ImagesServiceFactory.makeComposite(lowerLeft,0, halfHeight*2,1f,Composite.Anchor.TOP_LEFT));
 
-                    composites.add(ImagesServiceFactory.makeComposite(lowerRight,halfWidth, halfHeight,1f,Composite.Anchor.TOP_LEFT));
+                    composites.add(ImagesServiceFactory.makeComposite(lowerRight,halfWidth*2, halfHeight*2,1f,Composite.Anchor.TOP_LEFT));
 
                     System.out.println("At depth"+depth+"this is compositing"+composites.size()+"images" + firstX +',' +firstY);
 
-                    return imgService.composite(composites,partitionWidth+1,partitionHeight+1,0);
+                    return imgService.composite(composites,partitionWidth*2,partitionHeight*2,0);
                 }
                 else{
                     System.out.println("We don't want to go deeper; just draw it starting at "+firstX+",");
@@ -109,10 +112,8 @@ public class Collage {
     }
     private Image colorIn( int firstX, int firstY, int partitionHeight, int partitionWidth){
         // Have to perform a query
-        String[] urlAndUsername = crawler.query(processedImage.getRGBHistogram(true,firstX,firstY,partitionHeight,partitionWidth)).split(" ");
-        Image fillIn = new ProcessedImage(urlAndUsername[0],urlAndUsername[1]).getScaled(partitionWidth,partitionHeight);
-        //Composite aPaste = ImagesServiceFactory.makeComposite(fillIn, firstX, firstY, 1f, Composite.Anchor.TOP_LEFT);
-        return fillIn;
+        ProcessedImage processed = new ProcessedImage(crawler.query(processedImage.getRGBHistogram(true,firstX,firstY,partitionHeight,partitionWidth)));
+        return processed.getScaled(partitionWidth*2,partitionHeight*2);
     }
 
 

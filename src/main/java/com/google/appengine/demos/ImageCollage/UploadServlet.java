@@ -42,8 +42,7 @@ public class UploadServlet extends HttpServlet {
         double threshold = Double.parseDouble(req.getParameter("threshold"));
         Collage pix = new Collage(image, depth, threshold);
         System.out.println("made the collage object");
-        int size = Integer.parseInt(req.getParameter("size"));
-        Image pixelated = pix.getCollage(size, size);
+        Image pixelated = pix.getCollage();
 
         String url = imgService.getServingUrl(ServingUrlOptions.Builder.withBlobKey(toBlobstore(pixelated)));
         //resp.sendRedirect("/serve?blob-key=" + toBlobstore(pixelated).getKeyString());

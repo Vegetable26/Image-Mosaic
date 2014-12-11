@@ -8,6 +8,12 @@ import com.flickr4java.flickr.photos.*;
 import com.flickr4java.flickr.photos.licenses.*;
 import com.google.appengine.api.datastore.*;
 import java.util.List;
+import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
+import com.google.appengine.api.images.Image;
+import com.google.appengine.api.images.ImagesService;
+import com.google.appengine.api.images.ImagesServiceFactory;
+import java.util.Random;
+
 
 
 public class Crawler {
@@ -70,6 +76,7 @@ public class Crawler {
                     flickrPic.setProperty("b"+Integer.toString(i-16), binVal);
                 }
             }
+            flickrPic.setProperty("blob", new Blob(processed.getImage().getImageData()));
             datastore.put(flickrPic);
             /*Vector vec = new Vector(key, rgbHist);
             if (query(rgbHist).compareTo(key) != 0){
@@ -114,10 +121,44 @@ public class Crawler {
     }
 
     //returns the key (url+ " " + username) for the closest vector to rgbHistogram in Index
-    public String query(double[] rgbHistogram){
+    public Image query(double[] rgbHistogram){
         Vector vector = new Vector("", rgbHistogram);
-        List<Vector> closest = index.query(vector, 10);
-        return closest.get(0).getKey();
+        List<Vector> closest = index.query(vector, 1);
+
+        try {
+            Entity closestEnt = datastore.get(KeyFactory.createKey("flickrPic", closest.get(0).getKey()));
+            return ImagesServiceFactory.makeImage(((Blob)closestEnt.getProperty("blob")).getBytes());
+
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+    public Image ditherQuery(double[] rgbHistogram){
+        Vector vector = new Vector("", rgbHistogram);
+        List<Vector> closest = index.query(vector, 3);
+        Random random = new Random();
+        double dither = random.nextDouble();
+        int whichOne = -1;
+        if (dither < .5){
+            whichOne = 0;
+        }
+        else if (dither < .85){
+            whichOne = 1;
+        }
+        else{
+            whichOne = 2;
+        }
+        try {
+            Entity closestEnt = datastore.get(KeyFactory.createKey("flickrPic", closest.get(whichOne).getKey()));
+            return ImagesServiceFactory.makeImage(((Blob)closestEnt.getProperty("blob")).getBytes());
+
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
     }
 
 

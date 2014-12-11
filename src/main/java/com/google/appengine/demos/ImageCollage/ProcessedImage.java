@@ -192,7 +192,7 @@ public class ProcessedImage{
         else{
             getVarForMe = img;
         }
-        return getVarianceFromImage(getVarForMe);
+        return Math.sqrt(getVarianceFromImage(getVarForMe));
     }
 
 
@@ -226,7 +226,7 @@ public class ProcessedImage{
 
     public ProcessedImage getBlock(int firstX, int firstY, int partitionHeight, int partitionWidth){
         Transform cropBlock = ImagesServiceFactory.makeCrop((float)firstX/width, (float)firstY/height, (float)(firstX+partitionWidth)/width, (float)(firstY+partitionHeight)/height);
-        Image cropped = ImagesServiceFactory.makeImage(img.getImageBytes());
+        Image cropped = ImagesServiceFactory.makeImage(img.getImageData());
         return new ProcessedImage(imagesService.applyTransform(cropBlock, cropped));
     }
 

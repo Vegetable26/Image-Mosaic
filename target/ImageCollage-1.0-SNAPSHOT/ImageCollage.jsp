@@ -35,8 +35,6 @@
     <div><input type="text" name="threshold"></div>
     <div>enter the max depth</div>
     <div><input type="text" name="depth"></div>
-    <div>enter the size of the partition</div>
-    <div><input type="text" name="size"></div>
     <div><input type="submit" value="make da collage"></div>
     </form>
 
