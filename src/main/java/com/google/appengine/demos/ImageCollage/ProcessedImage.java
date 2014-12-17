@@ -19,17 +19,22 @@ import java.nio.ByteBuffer;
 // Big changes: newest version
 
 public class ProcessedImage{
-
-    private Image img;
-    private int width; // Width of the base image
-    private int height; // Height of the base image
-    private String username;
-    private String url;
     private double[] average = new double[3];
     private double[] rgbHistogram;
     private byte[] imageBytes;
-    ImagesService imagesService = ImagesServiceFactory.getImagesService();
+    private ImagesService imagesService = ImagesServiceFactory.getImagesService();
 
+    protected Image img;
+    protected int width; // Width of the base image
+    protected int height; // Height of the base image
+    protected String username;
+    protected String url;
+    public ProcessedImage(String url, String inputUser){
+        this.url = url;
+        readImage(url);
+        getDim();
+        username = inputUser;
+    }
     // To process a Photo retrieved from flickr, used in Crawler.find()
     public ProcessedImage(Photo photo, Flickr f){
         url = photo.getThumbnailUrl();
@@ -46,53 +51,9 @@ public class ProcessedImage{
         username = null;
     }
 
-
     // To process an image from the Crawler.query()
-    public ProcessedImage(String url, String inputUser){
-        this.url = url;
-        readImage(url);
-        getDim();
-        username = inputUser;
-    }
-
-
 
     private void readImage(String myURL) {
-        /*
-        URL urlObj = null;
-        try {
-            urlObj = new URL(myURL); // read the url
-        }
-        catch (MalformedURLException e){
-            e.printStackTrace();
-        }
-        ByteArrayOutputStream bais = new ByteArrayOutputStream();
-        InputStream is = null;
-        //byte[] byteChunk = new byte[4096]; // Or whatever size you want to read in at a time.
-        try {
-            is = urlObj.openStream ();
-            int n;
-            while ( (n = is.read()) > -1 ) {
-                bais.write(n);
-            }
-        }
-        catch (IOException e) {
-            e.printStackTrace ();
-            // Perform any other exception handling that's appropriate.
-        }
-        try{
-            if (is != null){
-                is.close();
-            }
-        }
-        catch (IOException e){
-            e.printStackTrace();
-        }
-        ByteBuffer buff = ByteBuffer.put(bais.toByteArray());
-        GcsFilename gcsName = new GcsFilename("plucky-respect-765.appspot.com", url);
-        gcs.createOrReplace(gcsName, GcsFileOptions.Builder().build(), buff);
-        img =
-        */
         URLFetchService fetchService = URLFetchServiceFactory.getURLFetchService();
         try {
             HTTPResponse fetchResponse = fetchService.fetch(new URL(myURL));
@@ -103,7 +64,7 @@ public class ProcessedImage{
         }
 
 
-        }
+    }
 
     private void readUsername(Photo photo, Flickr f){
         try {
@@ -169,22 +130,6 @@ public class ProcessedImage{
     }
 
     public double getVariance(boolean forBlock, int firstX, int firstY, int partitionHeight, int partitionWidth){
-        /*
-        // Returns an array containing the average (pixel integer) and sum of the RGB variances.
-        for(int k = 0; k<partitionWidth; k++){ //Iterates over the partition by columns
-            for(int l = 0; l<partitionHeight; l++){
-                int[] rgb = RGBArray(img.getRGB((firstX+k),(firstY+l)));
-                for(int m=0;m<3;m++){
-                    average[m] = average[m] + rgb[m];
-                }
-            }
-        }
-        double varSum = 0;
-        for(int h = 0;h<3;h++){
-            average[h] = average[h]/(partitionHeight*partitionWidth); // Divides by the number of pixels in the partition
-        }
-        return average;
-        */
         Image getVarForMe;
         if (forBlock){
             getVarForMe = getBlock(firstX, firstY, partitionHeight, partitionWidth).getImage();
@@ -192,36 +137,32 @@ public class ProcessedImage{
         else{
             getVarForMe = img;
         }
-        return Math.sqrt(getVarianceFromImage(getVarForMe));
+        return getVarianceFromImage(getVarForMe);
     }
 
 
     private double getVarianceFromImage(Image image){
         int[][] histogram = imagesService.histogram(image);
         double[] average = new double[3];
-        double[] vars = new double[3];
+        double[] squareAverage = new double[3];
+        int dim = image.getHeight()*image.getWidth();
         //get the sum for each row
         for (int color = 0; color < 3; color++){
             for (int bin = 0; bin < 256; bin++){
-                average[color] += histogram[color][bin];
+                average[color] += histogram[color][bin]*bin;
+                squareAverage[color] += histogram[color][bin]*Math.pow(bin,2);
             }
         }
         //get the variance for each color channel
+        double variance = 0;
         for (int color = 0; color < 3; color++){
-            average[color] /= 256;
-            for (int bin = 0; bin < 256; bin++){
-                vars[color] += (Math.pow(histogram[color][bin], 2) - Math.pow(average[color], 2));
-            }
+            average[color] /= dim;
+            squareAverage[color] /= dim;
+            variance += squareAverage[color] - Math.pow(average[color],2);
         }
         //sum the variances
-        double variance = 0;
-        for (double var : vars){
-            variance += Math.pow(var, 2);
-        }
         //square root the variance
-        return Math.sqrt(variance);
-
-
+        return variance;
     }
 
     public ProcessedImage getBlock(int firstX, int firstY, int partitionHeight, int partitionWidth){
