@@ -7,14 +7,20 @@ import com.flickr4java.flickr.*;
 import com.flickr4java.flickr.photos.*;
 import com.flickr4java.flickr.photos.licenses.*;
 import com.google.appengine.api.datastore.*;
+
+import java.util.Date;
 import java.util.List;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 import com.google.appengine.api.images.Image;
 import com.google.appengine.api.images.ImagesService;
 import com.google.appengine.api.images.ImagesServiceFactory;
 import java.util.Random;
-
-
+import java.io.FileWriter;
+import java.io.PrintWriter;
+import java.io.IOException;
+import java.util.*;
+import java.io.BufferedWriter;
+import java.io.File;
 
 public class Crawler {
     private String apiKey = "c3916472c30d567c38898c61ee7d0638";
@@ -51,6 +57,21 @@ public class Crawler {
         catch(Exception e) {
             e.printStackTrace();
         }
+        try {
+            String searchParam = "";
+            for (int i = 0; i < topics.length; i++){
+                searchParam += topics[i];
+                if (i != topics.length-1){
+                    searchParam += " ";
+                }
+            }
+            Date time = new Date();
+            Entity search = new Entity("search", time.toString());
+            search.setProperty("time", time.getTime());
+            search.setProperty("searchParam", searchParam);
+            search.setProperty("numImg", numImg);
+            datastore.put(search);
+        } catch (Exception e) { e.printStackTrace(); }
         return photos;
     }
 
@@ -77,6 +98,7 @@ public class Crawler {
                 }
             }
             flickrPic.setProperty("blob", new Blob(processed.getImage().getImageData()));
+            flickrPic.setProperty("time", new Date());
             datastore.put(flickrPic);
             /*Vector vec = new Vector(key, rgbHist);
             if (query(rgbHist).compareTo(key) != 0){

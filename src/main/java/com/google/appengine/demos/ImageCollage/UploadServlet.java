@@ -46,7 +46,7 @@ public class UploadServlet extends HttpServlet {
 
         String url = imgService.getServingUrl(ServingUrlOptions.Builder.withBlobKey(toBlobstore(pixelated)));
         //resp.sendRedirect("/serve?blob-key=" + toBlobstore(pixelated).getKeyString());
-        resp.sendRedirect(url);
+        resp.sendRedirect(url+"=s1600");
 
         /*Entity uploadedImage = new Entity("upload", uploadKey);
         uploadedImage.setProperty("userPic", userPic);
