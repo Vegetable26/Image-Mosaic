@@ -23,24 +23,10 @@
 <head>
     <link type="text/css" rel="stylesheet" href="/stylesheets/main.css"/>
 
-    <!--
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
     <script>
-    function showForm(whichForm){
-    var form = "hi";
-    if (whichForm == 1){
-        form = document.getElementById("collage_form").innerHTML;
-    }
-    if (whichForm == 2){
-        form = document.getElementById("index_form").innerHTML;
-    }
-    else{
-        form = document.getElementById("gallery_form").innerHTML;
-    }
-    document.getElementById("content").innerHTML = form;
-    }
-    </script>
-    -->
-    <script>
+    //this function will display a form below the current page based on the input parameter whichForm
     function showForm(whichForm)
     {
     var xmlhttp;
@@ -56,7 +42,15 @@
     {
     if (xmlhttp.readyState==4 && xmlhttp.status==200)
     {
-    document.getElementById("form").innerHTML=xmlhttp.responseText;
+    //set the form div to have the html content defined by xmlhttp.open
+    var form = document.getElementById("form");
+    form.innerHTML=xmlhttp.responseText;
+    var myScripts = form.getElementsByTagName("script");
+    if (myScripts.length > 0) {
+    for (i = 0; i < myScripts.length; i++){
+        eval(myScripts[i].innerHTML);
+    }
+    }
     }
     }
     var openMe;
@@ -73,6 +67,9 @@
     xmlhttp.send();
     }
     </script>
+
+
+
 
 
 </head>

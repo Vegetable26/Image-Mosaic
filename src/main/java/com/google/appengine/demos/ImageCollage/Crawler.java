@@ -53,11 +53,6 @@ public class Crawler {
         param.setTags(topics);
         try {
             photos = finder.search(param,numImg,1);
-        }
-        catch(Exception e) {
-            e.printStackTrace();
-        }
-        try {
             String searchParam = "";
             for (int i = 0; i < topics.length; i++){
                 searchParam += topics[i];
@@ -71,7 +66,11 @@ public class Crawler {
             search.setProperty("searchParam", searchParam);
             search.setProperty("numImg", numImg);
             datastore.put(search);
-        } catch (Exception e) { e.printStackTrace(); }
+            System.out.println("just put a new search");
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
         return photos;
     }
 

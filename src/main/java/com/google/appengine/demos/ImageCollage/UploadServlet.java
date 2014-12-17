@@ -40,7 +40,8 @@ public class UploadServlet extends HttpServlet {
         //get the collage
         int depth = Integer.parseInt(req.getParameter("depth"));
         double threshold = Double.parseDouble(req.getParameter("threshold"));
-        Collage pix = new Collage(image, depth, threshold);
+        int inputFactor = Integer.parseInt(req.getParameter("inputFactor"));
+        Collage pix = new Collage(image, depth, threshold, inputFactor);
         System.out.println("made the collage object");
         Image pixelated = pix.getCollage();
 

@@ -36,6 +36,8 @@ BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService(
         <div><input type="text" name="threshold"></div>
         <div>enter the max depth</div>
         <div><input type="text" name="depth"></div>
+        <div>enter the scaling factor</div>
+        <div><input type="text" name="inputFactor"></div>
         <div><input type="submit" value="make da collage"></div>
         </form>
 

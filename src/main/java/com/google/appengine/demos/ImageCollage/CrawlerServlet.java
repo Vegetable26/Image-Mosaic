@@ -38,6 +38,7 @@ public class CrawlerServlet extends HttpServlet {
             else {
                 writeMe = getImagesSince(get, datastore);
             }
+            System.out.println("writeMe is " + writeMe);
             resp.setContentType("application/json");
             resp.setCharacterEncoding("UTF-8");
             resp.getWriter().write(writeMe);
@@ -49,7 +50,8 @@ public class CrawlerServlet extends HttpServlet {
         PreparedQuery pq = datastore.prepare(q);
         List<CrawlerSearch> searches = new ArrayList<CrawlerSearch>();
         for (Entity result : pq.asIterable()){
-            searches.add(new CrawlerSearch((String)result.getProperty("time"), (String)result.getProperty("searchParam"), (Integer)result.getProperty("numImg")));
+            System.out.println("got a search");
+            searches.add(new CrawlerSearch(new Date((long)result.getProperty("time")).toString(), (String)result.getProperty("searchParam"), (int)(long)result.getProperty("numImg")));
         }
         return new Gson().toJson(searches);
 
