@@ -25,29 +25,26 @@ BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService(
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 
         <script>
-        $("#theForm").submit(function(e)
-        {
-        var getData = $(this).serializeArray();
-        var formURL = $(this).attr("action");
-        $.ajax(
-        {
-        url : formURL,
-        type: "GET",
-        data : getData,
-        success:function(data, textStatus, jqXHR)
-        {
-        //data: return data from server
-        },
-        error: function(jqXHR, textStatus, errorThrown)
-        {
-        //if fails
-        }
-        });
-        e.preventDefault(); //STOP default action
-        e.unbind(); //unbind. to stop multiple form submit.
+
+        $("#theForm").submit(function(e) {
+            var getData = $(this).serializeArray();
+            var formURL = $(this).attr("action");
+            $.ajax( {
+                url : formURL,
+                type: "GET",
+                data : getData,
+                success:function(data, textStatus, jqXHR){
+                    //data: return data from server
+                },
+                error: function(jqXHR, textStatus, errorThrown){
+                //if fails
+                }
+            });
+            e.preventDefault(); //STOP default action
+            e.unbind(); //unbind. to stop multiple form submit.
         });
 
-        $("#theForm").submit();</script>
+        </script>
         </head>
 
         <body>
