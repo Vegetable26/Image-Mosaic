@@ -53,11 +53,6 @@ public class Crawler {
         param.setTags(topics);
         try {
             photos = finder.search(param,numImg,1);
-        }
-        catch(Exception e) {
-            e.printStackTrace();
-        }
-        try {
             String searchParam = "";
             for (int i = 0; i < topics.length; i++){
                 searchParam += topics[i];
@@ -71,7 +66,10 @@ public class Crawler {
             search.setProperty("searchParam", searchParam);
             search.setProperty("numImg", numImg);
             datastore.put(search);
-        } catch (Exception e) { e.printStackTrace(); }
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
         return photos;
     }
 
@@ -98,7 +96,7 @@ public class Crawler {
                 }
             }
             flickrPic.setProperty("blob", new Blob(processed.getImage().getImageData()));
-            flickrPic.setProperty("time", new Date());
+            flickrPic.setProperty("time", new Date().getTime());
             datastore.put(flickrPic);
             /*Vector vec = new Vector(key, rgbHist);
             if (query(rgbHist).compareTo(key) != 0){

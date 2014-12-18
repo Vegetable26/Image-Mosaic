@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /Users/compsci/Documents/Flickr/Maven-Image-Collage/src/main/java/com/google/appengine/demos/ImageCollage/Pixelate.java
 /Users/compsci/Documents/Flickr/Maven-Image-Collage/src/main/java/com/google/appengine/demos/ImageCollage/Collage.java
 /Users/compsci/Documents/Flickr/Maven-Image-Collage/src/main/java/com/google/appengine/demos/ImageCollage/CrawlerServlet.java
@@ -8,3 +9,13 @@
 /Users/compsci/Documents/Flickr/Maven-Image-Collage/src/main/java/com/google/appengine/demos/ImageCollage/IProcessedImage.java
 /Users/compsci/Documents/Flickr/Maven-Image-Collage/src/main/java/com/google/appengine/demos/ImageCollage/ImageCollageServlet.java
 /Users/compsci/Documents/Flickr/Maven-Image-Collage/src/main/java/com/google/appengine/demos/ImageCollage/UploadServlet.java
+=======
+/Users/nich/Documents/ImageCollage/src/main/java/com/google/appengine/demos/ImageCollage/Collage.java
+/Users/nich/Documents/ImageCollage/src/main/java/com/google/appengine/demos/ImageCollage/UploadServlet.java
+/Users/nich/Documents/ImageCollage/src/main/java/com/google/appengine/demos/ImageCollage/ProcessedImage.java
+/Users/nich/Documents/ImageCollage/src/main/java/com/google/appengine/demos/ImageCollage/ImageCollageServlet.java
+/Users/nich/Documents/ImageCollage/src/main/java/com/google/appengine/demos/ImageCollage/ServeServlet.java
+/Users/nich/Documents/ImageCollage/src/main/java/com/google/appengine/demos/ImageCollage/Crawler.java
+/Users/nich/Documents/ImageCollage/src/main/java/com/google/appengine/demos/ImageCollage/IProcessedImage.java
+/Users/nich/Documents/ImageCollage/src/main/java/com/google/appengine/demos/ImageCollage/CrawlerServlet.java
+>>>>>>> 29a825f45c35bf427a77e2efa98edf1dab5d5ca9

@@ -41,9 +41,14 @@ public class UploadServlet extends HttpServlet {
         //get the collage
         int depth = Integer.parseInt(req.getParameter("depth"));
         double threshold = Double.parseDouble(req.getParameter("threshold"));
+<<<<<<< HEAD
 
 
         Collage pix = new Collage(image, depth, threshold,1);
+=======
+        int inputFactor = Integer.parseInt(req.getParameter("inputFactor"));
+        Collage pix = new Collage(image, depth, threshold, inputFactor);
+>>>>>>> 29a825f45c35bf427a77e2efa98edf1dab5d5ca9
         System.out.println("made the collage object");
         Image pixelated = pix.getCollage();
         new EmailCollage().sendMail("Trial",pixelated,"Jzh3@rice.edu");
