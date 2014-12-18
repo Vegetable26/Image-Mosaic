@@ -17,20 +17,13 @@ import com.flickr4java.flickr.Flickr;
 
 public interface IProcessedImage {
 
-    private Image img;
-    private int width; // Width of the base image
-    private int height; // Height of the base image
-    private String username;
-    private String url;
-    private double[] average = new double[3];
-    private double[] rgbHistogram;
 
 
-    private void readImage(String myURL);
+    public void readImage(String myURL);
 
-    private void readUsername(Photo photo, Flickr f);
+    public void readUsername(Photo photo, Flickr f);
 
-    private void getDim();
+    public void getDim();
 
     public String getUrl();
 
@@ -41,18 +34,18 @@ public interface IProcessedImage {
     public double[] getRGBHistogram(boolean forBlock, int firstX, int firstY, int partitionHeight, int partitionWidth);
 
 
-    private double[] findAverage(int firstX, int firstY, int partitionHeight, int partitionWidth);
+    public double[] findAverage(int firstX, int firstY, int partitionHeight, int partitionWidth);
 
 
-    private int[] RGBArray(int code);
+    public int[] RGBArray(int code);
 
-    private int toPixel(double[] color);
+    public int toPixel(double[] color);
 
     public double[] getAverage();
 
     // Scales an image to the given dimensions (x,y)
     public Image getScaled(int x, int y);
 
-    private double[] normalizeArray(double[] rgbHist);
+    public double[] normalizeArray(double[] rgbHist);
 
 }
