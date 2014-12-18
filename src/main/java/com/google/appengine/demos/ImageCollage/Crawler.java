@@ -66,7 +66,6 @@ public class Crawler {
             search.setProperty("searchParam", searchParam);
             search.setProperty("numImg", numImg);
             datastore.put(search);
-            System.out.println("just put a new search");
         }
         catch(Exception e) {
             e.printStackTrace();
@@ -97,7 +96,7 @@ public class Crawler {
                 }
             }
             flickrPic.setProperty("blob", new Blob(processed.getImage().getImageData()));
-            flickrPic.setProperty("time", new Date());
+            flickrPic.setProperty("time", new Date().getTime());
             datastore.put(flickrPic);
             /*Vector vec = new Vector(key, rgbHist);
             if (query(rgbHist).compareTo(key) != 0){
