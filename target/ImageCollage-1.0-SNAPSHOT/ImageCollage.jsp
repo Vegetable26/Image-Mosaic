@@ -41,6 +41,7 @@
     </script>
     -->
     <script>
+    //this function will display a form below the current page based on the input parameter whichForm
     function showForm(whichForm)
     {
     var xmlhttp;
@@ -56,6 +57,7 @@
     {
     if (xmlhttp.readyState==4 && xmlhttp.status==200)
     {
+    //set the form div to have the html content defined by xmlhttp.open
     document.getElementById("form").innerHTML=xmlhttp.responseText;
     }
     }

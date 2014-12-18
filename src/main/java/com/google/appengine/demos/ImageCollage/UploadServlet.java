@@ -36,17 +36,21 @@ public class UploadServlet extends HttpServlet {
         Map<String, BlobKey> blobs = blobstoreService.getUploadedBlobs(req);
         BlobKey blobKey = blobs.get("userPic");
         Image image = ImagesServiceFactory.makeImage(getData(blobKey));
+
         ImagesService imgService = ImagesServiceFactory.getImagesService();
         //get the collage
         int depth = Integer.parseInt(req.getParameter("depth"));
         double threshold = Double.parseDouble(req.getParameter("threshold"));
-        Collage pix = new Collage(image, depth, threshold);
+
+
+        Collage pix = new Collage(image, depth, threshold,1);
         System.out.println("made the collage object");
         Image pixelated = pix.getCollage();
-
+        new EmailCollage().sendMail("Trial",pixelated,"Jzh3@rice.edu");
         String url = imgService.getServingUrl(ServingUrlOptions.Builder.withBlobKey(toBlobstore(pixelated)));
-        //resp.sendRedirect("/serve?blob-key=" + toBlobstore(pixelated).getKeyString());
         resp.sendRedirect(url+"=s1600");
+
+
 
         /*Entity uploadedImage = new Entity("upload", uploadKey);
         uploadedImage.setProperty("userPic", userPic);

@@ -123,6 +123,7 @@ public class Collage {
             }
         }
         */
+
         return processed.getScaled(partitionWidth*factor,partitionHeight*factor);
 
     }
