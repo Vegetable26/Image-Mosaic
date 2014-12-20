@@ -7,6 +7,7 @@
 
 <script>
 
+<<<<<<< HEAD
 $("#theForm").submit(function(e) {
     var getData = $(this).serializeArray();
     var formURL = $(this).attr("action");
@@ -26,6 +27,30 @@ $("#theForm").submit(function(e) {
 });
 
 </script>
+=======
+        <script>
+
+        $("#theForm").submit(function(e) {
+            var getData = $(this).serializeArray();
+            var formURL = $(this).attr("action");
+            $.ajax( {
+                url : formURL,
+                type: "GET",
+                data : getData,
+                success:function(data, textStatus, jqXHR){
+                    //data: return data from server
+                },
+                error: function(jqXHR, textStatus, errorThrown){
+                //if fails
+                }
+            });
+            e.preventDefault(); //STOP default action
+            e.unbind(); //unbind. to stop multiple form submit.
+        });
+
+        </script>
+        </head>
+>>>>>>> 29a825f45c35bf427a77e2efa98edf1dab5d5ca9
 
     <script>
     var $body = $("body");
