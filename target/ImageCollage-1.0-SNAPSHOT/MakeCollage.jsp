@@ -15,19 +15,48 @@
 <%@ page import="com.google.appengine.api.blobstore.BlobstoreService" %>
 
 <%
-BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+    BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
 %>
-
 <html>
 
 <head>
-    <link type="text/css" rel="stylesheet" href="/stylesheets/main.css"/>
+    <script>
+    $( '#myForm' ).submit( function( e ) {
+        var formURL = $(this).attr("action");
+        $.ajax( {
+            url: formURL,
+            type: 'POST',
+            data: new FormData( this ),
+            processData: false,
+            contentType: false,
+
+            success: function(resp){
+                $('<img>').attr('src', resp).appendTo('#picDiv');
+                }
+        });
+        e.preventDefault();
+        //e.unbind(); //unbind. to stop multiple form submit.
+
+    } );
+    </script>
+
+    <script>
+    var $body = $("body");
+
+    $(document).ajaxStart( function() {
+    $body.addClass("loading");
+    });
+    $(document).ajaxStop( function() {
+    $body.removeClass("loading");
+    });
+    </script>
+
 </head>
 
 <body>
 
     <h3>Make a collage</h3>
-        <form action="<%= blobstoreService.createUploadUrl("/upload") %>" method="post" enctype="multipart/form-data">
+        <form id="myForm" action="<%= blobstoreService.createUploadUrl("/upload") %>" method="post" enctype="multipart/form-data">
         <div>Choose the image you want to collage-ify</div>
         <div><input type="file" name="userPic"></div>
         <div>Choose a theme for the collage</div>
@@ -41,6 +70,9 @@ BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService(
         <div><input type="submit" value="make da collage"></div>
         </form>
 
+    <div id="picDiv"></div>
+
+    <div class="modal"></div>
 
     </body>
 

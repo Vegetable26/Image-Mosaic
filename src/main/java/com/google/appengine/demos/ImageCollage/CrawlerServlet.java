@@ -93,6 +93,7 @@ public class CrawlerServlet extends HttpServlet {
     }
 
     private void deleteImages(String[] deleteUs){
+        System.out.println(Arrays.toString(deleteUs));
         for (String deleteMe : deleteUs){
             Key key = KeyFactory.createKey("flickrPic", deleteMe);
             datastore.delete(key);

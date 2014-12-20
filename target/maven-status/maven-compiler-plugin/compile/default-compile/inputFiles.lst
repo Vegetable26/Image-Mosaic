@@ -4,5 +4,6 @@
 /Users/nich/Documents/ImageCollage/src/main/java/com/google/appengine/demos/ImageCollage/ImageCollageServlet.java
 /Users/nich/Documents/ImageCollage/src/main/java/com/google/appengine/demos/ImageCollage/ServeServlet.java
 /Users/nich/Documents/ImageCollage/src/main/java/com/google/appengine/demos/ImageCollage/Crawler.java
+/Users/nich/Documents/ImageCollage/src/main/java/com/google/appengine/demos/ImageCollage/EmailCollage.java
 /Users/nich/Documents/ImageCollage/src/main/java/com/google/appengine/demos/ImageCollage/IProcessedImage.java
 /Users/nich/Documents/ImageCollage/src/main/java/com/google/appengine/demos/ImageCollage/CrawlerServlet.java

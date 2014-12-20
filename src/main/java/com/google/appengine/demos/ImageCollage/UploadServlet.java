@@ -46,18 +46,9 @@ public class UploadServlet extends HttpServlet {
         Image pixelated = pix.getCollage();
 
         String url = imgService.getServingUrl(ServingUrlOptions.Builder.withBlobKey(toBlobstore(pixelated)));
-        //resp.sendRedirect("/serve?blob-key=" + toBlobstore(pixelated).getKeyString());
-        resp.sendRedirect(url+"=s1600");
-
-        /*Entity uploadedImage = new Entity("upload", uploadKey);
-        uploadedImage.setProperty("userPic", userPic);
-        uploadedImage.setProperty("date", date);
-        uploadedImage.setProperty("theme", theme);
-
-        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-        datastore.put(uploadedImage);
-        */
-        //resp.sendRedirect(imageUrl);
+        resp.setContentType("text/html");
+        resp.setCharacterEncoding("UTF-8");
+        resp.getWriter().write(url+"=s1600");
     }
 
     private byte[] getData(BlobKey blobKey) {

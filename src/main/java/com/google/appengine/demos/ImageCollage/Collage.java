@@ -78,7 +78,7 @@ public class Collage {
                 int halfWidth = partitionWidth / 2;
                 int halfHeight = partitionHeight / 2;
                 double original = colorMe.getVariance(false, firstX, firstY, Math.min(partitionHeight, height - firstY - 1), Math.min(partitionWidth, width - firstX - 1));
-                System.out.println(original);
+                //System.out.println(original);
                 if (original > varianceThreshhold){
                     ArrayList<Composite> composites = new ArrayList<Composite>();
                     isBest = false;

@@ -1,18 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ page import="com.google.appengine.api.users.User" %>
-<%@ page import="com.google.appengine.api.users.UserService" %>
-<%@ page import="com.google.appengine.api.users.UserServiceFactory" %>
-<%@ page import="java.util.List" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<%@ page import="com.google.appengine.api.datastore.DatastoreService" %>
-<%@ page import="com.google.appengine.api.datastore.DatastoreServiceFactory" %>
-<%@ page import="com.google.appengine.api.datastore.Entity" %>
-<%@ page import="com.google.appengine.api.datastore.FetchOptions" %>
-<%@ page import="com.google.appengine.api.datastore.Key" %>
-<%@ page import="com.google.appengine.api.datastore.KeyFactory" %>
-<%@ page import="com.google.appengine.api.datastore.Query" %>
-<%@ page import="com.google.appengine.api.blobstore.BlobstoreServiceFactory" %>
-<%@ page import="com.google.appengine.api.blobstore.BlobstoreService" %>
+
 
 <html>
 <head>
@@ -33,7 +21,7 @@
     <script>
     $(document).ready(function() {
         $('#crawlerSearches').on('click', 'tr', function() { //when you click a row in the table
-            document.getElementById("deleteImgs").innerHTML = "Check the images that you want to delete.<br>";
+            document.getElementById("deleteImgs").innerHTML = "<br><i>Check the images that you want to delete.</i><br>";
             var time = $(this).find('td.time').html();
             $.get('crawl?get='+time, function(responseJson) {  //get the images since time using crawler servlet
                 $.each(responseJson, function(index, item) {  //for each image since time...
@@ -67,6 +55,8 @@
             success:function(data, textStatus, jqXHR)
             {
             //data: return data from server
+            alert("Deleted the checked images");
+
             },
             error: function(jqXHR, textStatus, errorThrown)
             {
@@ -74,11 +64,23 @@
             }
         });
         e.preventDefault(); //STOP default action
-        e.unbind(); //unbind. to stop multiple form submit.
+        //e.unbind(); //unbind. to stop multiple form submit.
         });
     </script>
 
+    <script>
+    var $body = $("body");
+
+    $(document).ajaxStart( function() {
+    $body.addClass("loading");
+    });
+    $(document).ajaxStop( function() {
+    $body.removeClass("loading");
+    });
+    </script>
+
     </head>
+
 <body>
 
     <h3>Check the index</h3>
@@ -100,6 +102,7 @@
     </form>
     </div>
 
+    <div class="modal"></div>
 
 
 
