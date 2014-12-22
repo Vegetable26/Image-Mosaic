@@ -77,31 +77,32 @@ public class Crawler {
     public void addToDatastore(PhotoList<Photo> photos){
 
         for (Photo pic : photos){
-            ProcessedImage processed = new ProcessedImage(pic, f);
-            double[] rgbHist = processed.getRGBHistogram(false, 0, 0, 0, 0);
+            try {
+                ProcessedImage processed = new ProcessedImage(pic, f);
+                double[] rgbHist = processed.getRGBHistogram(false, 0, 0, 0, 0);
 
-            String key = processed.getUrl()+" "+processed.getUsername();
-            System.out.println("The key is "+key);
-            Entity flickrPic = new Entity("flickrPic", key);
-            for (int i = 0; i < rgbHist.length; i++){
-                double binVal = rgbHist[i];
-                if (i < 8){
-                    flickrPic.setProperty("r"+Integer.toString(i), binVal);
+                String key = processed.getUrl()+" "+processed.getUsername();
+                System.out.println("The key is "+key);
+                Entity flickrPic = new Entity("flickrPic", key);
+                for (int i = 0; i < rgbHist.length; i++){
+                    double binVal = rgbHist[i];
+                    if (i < 8){
+                        flickrPic.setProperty("r"+Integer.toString(i), binVal);
+                    }
+                    else if (i < 16){
+                        flickrPic.setProperty("g"+Integer.toString(i-8), binVal);
+                    }
+                    else{
+                        flickrPic.setProperty("b"+Integer.toString(i-16), binVal);
+                    }
                 }
-                else if (i < 16){
-                    flickrPic.setProperty("g"+Integer.toString(i-8), binVal);
-                }
-                else{
-                    flickrPic.setProperty("b"+Integer.toString(i-16), binVal);
-                }
+                flickrPic.setProperty("blob", new Blob(processed.getImage().getImageData()));
+                flickrPic.setProperty("time", new Date().getTime());
+                datastore.put(flickrPic);
             }
-            flickrPic.setProperty("blob", new Blob(processed.getImage().getImageData()));
-            flickrPic.setProperty("time", new Date().getTime());
-            datastore.put(flickrPic);
-            /*Vector vec = new Vector(key, rgbHist);
-            if (query(rgbHist).compareTo(key) != 0){
-                index.index(vec);
-            }*/
+            catch (Exception e){
+                continue;
+            }
         }
     }
 

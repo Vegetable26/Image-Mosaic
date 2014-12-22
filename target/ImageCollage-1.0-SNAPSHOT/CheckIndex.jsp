@@ -1,18 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ page import="com.google.appengine.api.users.User" %>
-<%@ page import="com.google.appengine.api.users.UserService" %>
-<%@ page import="com.google.appengine.api.users.UserServiceFactory" %>
-<%@ page import="java.util.List" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<%@ page import="com.google.appengine.api.datastore.DatastoreService" %>
-<%@ page import="com.google.appengine.api.datastore.DatastoreServiceFactory" %>
-<%@ page import="com.google.appengine.api.datastore.Entity" %>
-<%@ page import="com.google.appengine.api.datastore.FetchOptions" %>
-<%@ page import="com.google.appengine.api.datastore.Key" %>
-<%@ page import="com.google.appengine.api.datastore.KeyFactory" %>
-<%@ page import="com.google.appengine.api.datastore.Query" %>
-<%@ page import="com.google.appengine.api.blobstore.BlobstoreServiceFactory" %>
-<%@ page import="com.google.appengine.api.blobstore.BlobstoreService" %>
 
 <html>
 <head>
@@ -67,6 +54,8 @@
             success:function(data, textStatus, jqXHR)
             {
             //data: return data from server
+            alert("Deleted the checked images");
+
             },
             error: function(jqXHR, textStatus, errorThrown)
             {
@@ -74,12 +63,28 @@
             }
         });
         e.preventDefault(); //STOP default action
+<<<<<<< HEAD
         e.unbind(); //unbind. to stop multiple form submit.
         alert("Deleted the checked images");
+=======
+        //e.unbind(); //unbind. to stop multiple form submit.
+>>>>>>> f0cfa30363e6c484c6bd25d7f8e24d952f9c1929
         });
     </script>
 
+    <script>
+    var $body = $("body");
+
+    $(document).ajaxStart( function() {
+    $body.addClass("loading");
+    });
+    $(document).ajaxStop( function() {
+    $body.removeClass("loading");
+    });
+    </script>
+
     </head>
+
 <body>
 
     <h3>Check the index</h3>
@@ -101,8 +106,6 @@
     </form>
     </div>
 
-
-
-
+    <div class="modal"></div>
 </body>
 </html>

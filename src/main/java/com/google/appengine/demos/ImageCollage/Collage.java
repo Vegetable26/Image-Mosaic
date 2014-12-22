@@ -18,8 +18,8 @@ public class Collage {
     private  int width; // Width of the base image
     private  int height; // Height of the base image
     private  int maxDepth;
-    private  double varianceThreshhold;
-    private  Crawler crawler = new Crawler();
+    private  int varianceThreshhold;
+    private  Crawler crawler;
     private int factor = 1;
     private List<AttributionCell> attributionTable = new ArrayList<AttributionCell>();
 
@@ -33,15 +33,20 @@ public class Collage {
     private Time totalTime = new Time();
 
 
+<<<<<<< HEAD
     public Collage(Image inputImg, int depth, double inputThresh, int inputFactor){
 
+=======
+    public Collage(Image inputImg, int depth, int inputThresh, int inputFactor, Crawler crawler){
+>>>>>>> f0cfa30363e6c484c6bd25d7f8e24d952f9c1929
         factor = inputFactor;
-        crawler.buildIndex();
+        this.crawler = crawler;
         img = inputImg;
         processedImage = new ProcessedImage(img);
         setMaxDepth(depth);
         height = inputImg.getHeight();
         width = inputImg.getWidth();
+<<<<<<< HEAD
         int limit = 1500000;
         if (height*width > limit){  // Scales the image if the current image is too high resolution
             double scalingFactor = Math.pow((double)limit/(height*width),.5);
@@ -50,6 +55,8 @@ public class Collage {
             height = img.getHeight();
             width = img.getWidth();
         }
+=======
+>>>>>>> f0cfa30363e6c484c6bd25d7f8e24d952f9c1929
         varianceThreshhold =  inputThresh;
         imgService = ImagesServiceFactory.getImagesService();
         System.out.println("Starting to Collage-ify");
@@ -82,9 +89,13 @@ public class Collage {
                 histogramTime.startTimer();
 
                 double original = colorMe.getVariance(false, firstX, firstY, Math.min(partitionHeight, height - firstY - 1), Math.min(partitionWidth, width - firstX - 1));
+<<<<<<< HEAD
 
                 histogramTime.endTimer();
 
+=======
+                //System.out.println(original);
+>>>>>>> f0cfa30363e6c484c6bd25d7f8e24d952f9c1929
                 if (original > varianceThreshhold){
                     ArrayList<Composite> composites = new ArrayList<Composite>();
                     isBest = false;
@@ -110,6 +121,7 @@ public class Collage {
                     composites.add(ImagesServiceFactory.makeComposite(lowerRight,(halfWidth)*factor, (halfHeight)*factor,1f,Composite.Anchor.TOP_LEFT));
 
                     //System.out.println("At depth"+depth+"this is compositing"+composites.size()+"images" + firstX +',' +firstY);
+<<<<<<< HEAD
 
                     Image returnVal = imgService.composite(composites,partitionWidth*factor,partitionHeight*factor,0);
 
@@ -117,6 +129,8 @@ public class Collage {
 
                     return returnVal;
 
+=======
+>>>>>>> f0cfa30363e6c484c6bd25d7f8e24d952f9c1929
 
                 }
                 else{
