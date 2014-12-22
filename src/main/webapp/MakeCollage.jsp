@@ -107,7 +107,7 @@
 
 <div id ="loser">
     <img id = "imgMe" src = "http://cdn.images.express.co.uk/img/dynamic/79/590x/dormer1-475628.jpg">
-    <p> Hi faggot </p>
+    <p> Hi! </p>
 </div>
 
 
