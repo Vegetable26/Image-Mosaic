@@ -2,11 +2,8 @@
 /Users/nich/Documents/ImageCollage/src/main/java/com/google/appengine/demos/ImageCollage/UploadServlet.java
 /Users/nich/Documents/ImageCollage/src/main/java/com/google/appengine/demos/ImageCollage/ProcessedImage.java
 /Users/nich/Documents/ImageCollage/src/main/java/com/google/appengine/demos/ImageCollage/ImageCollageServlet.java
-/Users/nich/Documents/ImageCollage/src/main/java/com/google/appengine/demos/ImageCollage/ServeServlet.java
 /Users/nich/Documents/ImageCollage/src/main/java/com/google/appengine/demos/ImageCollage/Crawler.java
-<<<<<<< HEAD
+/Users/nich/Documents/ImageCollage/src/main/java/com/google/appengine/demos/ImageCollage/RunnableCollage.java
 /Users/nich/Documents/ImageCollage/src/main/java/com/google/appengine/demos/ImageCollage/EmailCollage.java
-=======
->>>>>>> 29a825f45c35bf427a77e2efa98edf1dab5d5ca9
 /Users/nich/Documents/ImageCollage/src/main/java/com/google/appengine/demos/ImageCollage/IProcessedImage.java
 /Users/nich/Documents/ImageCollage/src/main/java/com/google/appengine/demos/ImageCollage/CrawlerServlet.java

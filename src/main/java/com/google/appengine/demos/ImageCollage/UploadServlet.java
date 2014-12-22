@@ -13,8 +13,11 @@ import java.util.Map;
 import com.google.appengine.api.files.*;
 import java.nio.ByteBuffer;
 import java.io.FileNotFoundException;
-
-
+import java.util.concurrent.ExecutionException;
+import java.util.ArrayList;
+import java.lang.Runnable;
+import com.google.appengine.api.ThreadManager;
+import java.util.concurrent.ThreadFactory;
 
 public class UploadServlet extends HttpServlet {
     private BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
@@ -22,35 +25,93 @@ public class UploadServlet extends HttpServlet {
     @Override
     public void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws IOException {
-        //UserService userService = UserServiceFactory.getUserService();
-        //User user = userService.getCurrentUser();
+        long start = System.currentTimeMillis();
 
-        //String guestbookName = req.getParameter("guestbookName");
-
-        /*BufferedImage userPic = req.getParameter("userPic");
-        String theme = req.getParameter("theme");
-        Date date = new Date();
-        Key uploadKey = KeyFactory.createKey("uploader", date.toString());
-        */
         //get the blob
         Map<String, BlobKey> blobs = blobstoreService.getUploadedBlobs(req);
         BlobKey blobKey = blobs.get("userPic");
-        Image image = ImagesServiceFactory.makeImage(getData(blobKey));
         ImagesService imgService = ImagesServiceFactory.getImagesService();
         //get the collage
         int depth = Integer.parseInt(req.getParameter("depth"));
-        double threshold = Double.parseDouble(req.getParameter("threshold"));
+        int threshold = Integer.parseInt(req.getParameter("threshold"));
         int inputFactor = Integer.parseInt(req.getParameter("inputFactor"));
-        Collage pix = new Collage(image, depth, threshold, inputFactor);
-        System.out.println("made the collage object");
-        Image pixelated = pix.getCollage();
-
-        String url = imgService.getServingUrl(ServingUrlOptions.Builder.withBlobKey(toBlobstore(pixelated)));
+        Image collage = getCollage(imgService, blobKey, depth, threshold, inputFactor);
+        String url = imgService.getServingUrl(ServingUrlOptions.Builder.withBlobKey(toBlobstore(collage)));
         resp.setContentType("text/html");
         resp.setCharacterEncoding("UTF-8");
         resp.getWriter().write(url+"=s1600");
+        long end = System.currentTimeMillis();
+        System.out.println("Execution:"+(end - start));
+
     }
 
+    private Image getCollage(ImagesService imgService, BlobKey blobKey, int depth, int threshold, int inputFactor){
+        try {
+            Crawler crawler = new Crawler();
+            crawler.buildIndex();
+            byte[] imageData = getData(blobKey);
+            Image image = ImagesServiceFactory.makeImage(imageData);
+
+            System.out.println("starting to get the collage");
+            ThreadFactory tf = ThreadManager.currentRequestThreadFactory();
+            int width = image.getWidth();
+            int height = image.getHeight();
+            int limit = 1000000;
+
+            if (height*width > limit){  // Scales the image if the current image is too high resolution
+                double scalingFactor = Math.pow((double)limit/(height*width),.5);
+                Transform scaleTransform = ImagesServiceFactory.makeResize((int)(width*scalingFactor), (int)(height*scalingFactor));
+                image = imgService.applyTransform(scaleTransform, image);
+                imageData = image.getImageData();
+                height = image.getHeight();
+                width = image.getWidth();
+            }
+
+            ArrayList<RunnableCollage> subCollages = new ArrayList<>();
+            ArrayList<Thread> threads = new ArrayList<>();
+            int initSplit = 4;
+            double prop = 1.0 / initSplit;
+            for (int j = 0; j < initSplit; j++) {
+                double y = (double)j / initSplit;
+                for (int i = 0; i < initSplit; i++) {
+                    image = ImagesServiceFactory.makeImage(imageData);
+                    System.out.println("on block "+j+", "+i);
+                    double x = (double)i / initSplit;
+                    Transform crop = ImagesServiceFactory.makeCrop(x, y, x + prop, y + prop);
+                    RunnableCollage subCollage = new RunnableCollage(imgService.applyTransform(crop, image),
+                            depth - 3, threshold, inputFactor, crawler);
+                    System.out.println("applied the crop on the square x:["+x+", "+(x+prop)+"], y:["+y+", "+(y+prop)+"]");
+                    //create the object of FutureTask
+                    subCollages.add(subCollage);
+
+                    //Create a thread object using the task object created
+                    Thread t = tf.newThread(subCollage);
+
+                    //Start the thread as usual
+                    t.start();
+                    threads.add(t);
+                }
+            }
+            int z = 0;
+            for (Thread thread : threads){
+                thread.join();
+                System.out.println("thread "+ z + " is done");
+                z++;
+            }
+            ArrayList<Composite> composites = new ArrayList<>();
+            for (int n = 0; n < initSplit; n++) {
+                for (int m = 0; m < initSplit; m++) {
+                    composites.add(ImagesServiceFactory.makeComposite(subCollages.get(n * initSplit + m).getCollage(),
+                            (int) (m / (double)initSplit * width), (int) (n / (double)initSplit * height), 1f, Composite.Anchor.TOP_LEFT));
+                }
+            }
+            return imgService.composite(composites, width * inputFactor, height * inputFactor, 0);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
     private byte[] getData(BlobKey blobKey) {
         InputStream input;
         byte[] oldImageData = null;

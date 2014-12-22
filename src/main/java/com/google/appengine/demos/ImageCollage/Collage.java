@@ -16,27 +16,19 @@ public class Collage {
     private  int height; // Height of the base image
     private  int minSize; // Stores the size of the minimum base image
     private  int maxDepth;
-    private  double varianceThreshhold;
-    private  Crawler crawler = new Crawler();
+    private  int varianceThreshhold;
+    private  Crawler crawler;
     private int factor = 1;
     private ProcessedImage[][] attributionTable;
 
-    public Collage(Image inputImg, int depth, double inputThresh, int inputFactor){
+    public Collage(Image inputImg, int depth, int inputThresh, int inputFactor, Crawler crawler){
         factor = inputFactor;
-        crawler.buildIndex();
+        this.crawler = crawler;
         img = inputImg;
         processedImage = new ProcessedImage(img);
         setMaxDepth(depth);
         height = inputImg.getHeight();
         width = inputImg.getWidth();
-        int limit = 1500000;
-        if (height*width > limit){  // Scales the image if the current image is too high resolution
-            double scalingFactor = Math.pow((double)limit/(height*width),.5);
-            img = processedImage.getScaled((int)(scalingFactor*width), (int)(scalingFactor*height));
-            processedImage = new ProcessedImage(img);
-            height = img.getHeight();
-            width = img.getWidth();
-        }
         varianceThreshhold =  inputThresh;
         imgService = ImagesServiceFactory.getImagesService();
         System.out.println("Starting to Collage-ify");
@@ -96,7 +88,7 @@ public class Collage {
 
                     composites.add(ImagesServiceFactory.makeComposite(lowerRight,(halfWidth)*factor, (halfHeight)*factor,1f,Composite.Anchor.TOP_LEFT));
 
-                    System.out.println("At depth"+depth+"this is compositing"+composites.size()+"images" + firstX +',' +firstY);
+                    //System.out.println("At depth"+depth+"this is compositing"+composites.size()+"images" + firstX +',' +firstY);
 
                     return imgService.composite(composites,partitionWidth*factor,partitionHeight*factor,0);
                 }

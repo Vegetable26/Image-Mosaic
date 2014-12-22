@@ -1,25 +1,17 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ page import="com.google.appengine.api.users.User" %>
-<%@ page import="com.google.appengine.api.users.UserService" %>
-<%@ page import="com.google.appengine.api.users.UserServiceFactory" %>
 <%@ page import="java.util.List" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<%@ page import="com.google.appengine.api.datastore.DatastoreService" %>
-<%@ page import="com.google.appengine.api.datastore.DatastoreServiceFactory" %>
-<%@ page import="com.google.appengine.api.datastore.Entity" %>
-<%@ page import="com.google.appengine.api.datastore.FetchOptions" %>
-<%@ page import="com.google.appengine.api.datastore.Key" %>
-<%@ page import="com.google.appengine.api.datastore.KeyFactory" %>
-<%@ page import="com.google.appengine.api.datastore.Query" %>
 <%@ page import="com.google.appengine.api.blobstore.BlobstoreServiceFactory" %>
 <%@ page import="com.google.appengine.api.blobstore.BlobstoreService" %>
 
 <%
     BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
 %>
+
 <html>
 
 <head>
+
     <script>
     $( '#myForm' ).submit( function( e ) {
         var formURL = $(this).attr("action");
@@ -32,7 +24,9 @@
 
             success: function(resp){
                 $('<img>').attr('src', resp).appendTo('#picDiv');
+                <% boolean submitted = true; %>
                 }
+
         });
         e.preventDefault();
         //e.unbind(); //unbind. to stop multiple form submit.
@@ -50,6 +44,7 @@
     $body.removeClass("loading");
     });
     </script>
+
 
 </head>
 
@@ -70,7 +65,19 @@
         <div><input type="submit" value="make da collage"></div>
         </form>
 
-    <div id="picDiv"></div>
+    <div id="picDiv">
+    <%/*
+    if (submitted){
+    String url = (String)request.getParameter("url");
+    out.print(url);
+
+    while (url == null){
+        url = (String)request.getParameter("url");
+    }
+    out.print("<img src=\""+url+"\">");
+    }*/
+    %>
+    </div>
 
     <div class="modal"></div>
 

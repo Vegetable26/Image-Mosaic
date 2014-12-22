@@ -1,5 +1,5 @@
+com/google/appengine/demos/ImageCollage/RunnableCollage.class
 com/google/appengine/demos/ImageCollage/UploadServlet.class
-com/google/appengine/demos/ImageCollage/ServeServlet.class
 com/google/appengine/demos/ImageCollage/ProcessedImage.class
 com/google/appengine/demos/ImageCollage/CrawlerServlet$CrawlerSearch.class
 com/google/appengine/demos/ImageCollage/Crawler.class

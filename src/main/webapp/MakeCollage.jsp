@@ -7,9 +7,11 @@
 <%
     BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
 %>
+
 <html>
 
 <head>
+
     <script>
     $( '#myForm' ).submit( function( e ) {
         var formURL = $(this).attr("action");
@@ -22,7 +24,9 @@
 
             success: function(resp){
                 $('<img>').attr('src', resp).appendTo('#picDiv');
+                <% boolean submitted = true; %>
                 }
+
         });
         e.preventDefault();
         //e.unbind(); //unbind. to stop multiple form submit.
@@ -40,6 +44,7 @@
     $body.removeClass("loading");
     });
     </script>
+
 
 </head>
 
@@ -60,7 +65,19 @@
         <div><input type="submit" value="make da collage"></div>
         </form>
 
-    <div id="picDiv"></div>
+    <div id="picDiv">
+    <%/*
+    if (submitted){
+    String url = (String)request.getParameter("url");
+    out.print(url);
+
+    while (url == null){
+        url = (String)request.getParameter("url");
+    }
+    out.print("<img src=\""+url+"\">");
+    }*/
+    %>
+    </div>
 
     <div class="modal"></div>
 
