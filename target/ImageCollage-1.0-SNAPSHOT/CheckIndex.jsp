@@ -33,7 +33,7 @@
     <script>
     $(document).ready(function() {
         $('#crawlerSearches').on('click', 'tr', function() { //when you click a row in the table
-            document.getElementById("deleteImgs").innerHTML = "Check the images that you want to delete.<br>";
+            document.getElementById("deleteImgs").innerHTML = "<br><i>Check the images that you want to delete.</i><br>";
             var time = $(this).find('td.time').html();
             $.get('crawl?get='+time, function(responseJson) {  //get the images since time using crawler servlet
                 $.each(responseJson, function(index, item) {  //for each image since time...
@@ -75,6 +75,7 @@
         });
         e.preventDefault(); //STOP default action
         e.unbind(); //unbind. to stop multiple form submit.
+        alert("Deleted the checked images");
         });
     </script>
 
@@ -87,7 +88,7 @@
     <table id="crawlerSearches" class="hoverTable">
         <tr>
             <th>Date</th>
-            <th>Search parameter</th>
+         3   <th>Search parameter</th>
             <th>Number of images</th>
         </tr>
     </table>

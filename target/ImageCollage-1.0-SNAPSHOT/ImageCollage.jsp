@@ -43,9 +43,6 @@
     if (xmlhttp.readyState==4 && xmlhttp.status==200)
     {
     //set the form div to have the html content defined by xmlhttp.open
-<<<<<<< HEAD
-    document.getElementById("form").innerHTML=xmlhttp.responseText;
-=======
     var form = document.getElementById("form");
     form.innerHTML=xmlhttp.responseText;
     var myScripts = form.getElementsByTagName("script");
@@ -54,7 +51,6 @@
         eval(myScripts[i].innerHTML);
     }
     }
->>>>>>> 29a825f45c35bf427a77e2efa98edf1dab5d5ca9
     }
     }
     var openMe;
@@ -67,6 +63,7 @@
     if (whichForm == 3){
         openMe = "CheckIndex.jsp";
     }
+
     xmlhttp.open("GET",openMe,true);
     xmlhttp.send();
     }

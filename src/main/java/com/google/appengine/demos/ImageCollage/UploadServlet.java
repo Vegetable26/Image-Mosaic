@@ -9,8 +9,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.Map;
 import com.google.appengine.api.files.*;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+
 import java.nio.ByteBuffer;
 import java.io.FileNotFoundException;
 
@@ -36,36 +40,24 @@ public class UploadServlet extends HttpServlet {
         Map<String, BlobKey> blobs = blobstoreService.getUploadedBlobs(req);
         BlobKey blobKey = blobs.get("userPic");
         Image image = ImagesServiceFactory.makeImage(getData(blobKey));
-
         ImagesService imgService = ImagesServiceFactory.getImagesService();
         //get the collage
         int depth = Integer.parseInt(req.getParameter("depth"));
         double threshold = Double.parseDouble(req.getParameter("threshold"));
-<<<<<<< HEAD
-
-
-        Collage pix = new Collage(image, depth, threshold,1);
-=======
         int inputFactor = Integer.parseInt(req.getParameter("inputFactor"));
         Collage pix = new Collage(image, depth, threshold, inputFactor);
->>>>>>> 29a825f45c35bf427a77e2efa98edf1dab5d5ca9
         System.out.println("made the collage object");
         Image pixelated = pix.getCollage();
-        new EmailCollage().sendMail("Trial",pixelated,"Jzh3@rice.edu");
-        String url = imgService.getServingUrl(ServingUrlOptions.Builder.withBlobKey(toBlobstore(pixelated)));
-        resp.sendRedirect(url+"=s1600");
 
+        String url = imgService.getServingUrl(ServingUrlOptions.Builder.withBlobKey(toBlobstore(pixelated)))+"=s1600";
+        String returnURL = new Gson().toJson(new URLAndAttribute(url,pix.getAttributionTable()));
 
-
-        /*Entity uploadedImage = new Entity("upload", uploadKey);
-        uploadedImage.setProperty("userPic", userPic);
-        uploadedImage.setProperty("date", date);
-        uploadedImage.setProperty("theme", theme);
-
-        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-        datastore.put(uploadedImage);
-        */
-        //resp.sendRedirect(imageUrl);
+        resp.setContentType("application/json");
+        //resp.setContentType("text/html");
+        resp.setCharacterEncoding("UTF-8");
+        resp.getWriter().write(returnURL);
+        System.out.println("response sent");
+        System.out.println(returnURL);
     }
 
     private byte[] getData(BlobKey blobKey) {
@@ -108,5 +100,13 @@ public class UploadServlet extends HttpServlet {
         }
         catch (Exception e){ e.printStackTrace();}
         return null;
+    }
+    public class URLAndAttribute{
+        String url;
+        List<Collage.AttributionCell> attributionTable;
+        public URLAndAttribute(String url, List<Collage.AttributionCell> attributes){
+            this.url = url;
+            this.attributionTable = attributes;
+        }
     }
 }
