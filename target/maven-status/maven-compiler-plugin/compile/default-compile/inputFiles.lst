@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 /Users/compsci/Documents/Flickr/Maven-Image-Collage/src/main/java/com/google/appengine/demos/ImageCollage/Pixelate.java
 /Users/compsci/Documents/Flickr/Maven-Image-Collage/src/main/java/com/google/appengine/demos/ImageCollage/Collage.java
 /Users/compsci/Documents/Flickr/Maven-Image-Collage/src/main/java/com/google/appengine/demos/ImageCollage/CrawlerServlet.java
@@ -6,18 +5,8 @@
 /Users/compsci/Documents/Flickr/Maven-Image-Collage/src/main/java/com/google/appengine/demos/ImageCollage/ServeServlet.java
 /Users/compsci/Documents/Flickr/Maven-Image-Collage/src/main/java/com/google/appengine/demos/ImageCollage/Crawler.java
 /Users/compsci/Documents/Flickr/Maven-Image-Collage/src/main/java/com/google/appengine/demos/ImageCollage/EmailCollage.java
-/Users/compsci/Documents/Flickr/Maven-Image-Collage/src/main/java/com/google/appengine/demos/ImageCollage/Time.java
+/Users/compsci/Documents/Flickr/Maven-Image-Collage/src/main/java/com/google/appengine/demos/ImageCollage/CollageMaster.java
 /Users/compsci/Documents/Flickr/Maven-Image-Collage/src/main/java/com/google/appengine/demos/ImageCollage/IProcessedImage.java
+/Users/compsci/Documents/Flickr/Maven-Image-Collage/src/main/java/com/google/appengine/demos/ImageCollage/RunnableCollage.java
 /Users/compsci/Documents/Flickr/Maven-Image-Collage/src/main/java/com/google/appengine/demos/ImageCollage/ImageCollageServlet.java
 /Users/compsci/Documents/Flickr/Maven-Image-Collage/src/main/java/com/google/appengine/demos/ImageCollage/UploadServlet.java
-=======
-/Users/nich/Documents/ImageCollage/src/main/java/com/google/appengine/demos/ImageCollage/Collage.java
-/Users/nich/Documents/ImageCollage/src/main/java/com/google/appengine/demos/ImageCollage/UploadServlet.java
-/Users/nich/Documents/ImageCollage/src/main/java/com/google/appengine/demos/ImageCollage/ProcessedImage.java
-/Users/nich/Documents/ImageCollage/src/main/java/com/google/appengine/demos/ImageCollage/ImageCollageServlet.java
-/Users/nich/Documents/ImageCollage/src/main/java/com/google/appengine/demos/ImageCollage/Crawler.java
-/Users/nich/Documents/ImageCollage/src/main/java/com/google/appengine/demos/ImageCollage/RunnableCollage.java
-/Users/nich/Documents/ImageCollage/src/main/java/com/google/appengine/demos/ImageCollage/EmailCollage.java
-/Users/nich/Documents/ImageCollage/src/main/java/com/google/appengine/demos/ImageCollage/IProcessedImage.java
-/Users/nich/Documents/ImageCollage/src/main/java/com/google/appengine/demos/ImageCollage/CrawlerServlet.java
->>>>>>> f0cfa30363e6c484c6bd25d7f8e24d952f9c1929

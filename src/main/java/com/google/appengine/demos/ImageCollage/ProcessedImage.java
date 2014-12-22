@@ -96,7 +96,7 @@ public class ProcessedImage{
     public double[] getRGBHistogram(boolean forBlock, int firstX, int firstY, int partitionHeight, int partitionWidth){
         Image getRGBHistForMe;
         if (forBlock){
-            getRGBHistForMe = getBlock(firstX, firstY, partitionHeight, partitionWidth, new Time()).getImage();
+            getRGBHistForMe = getBlock(firstX, firstY, partitionHeight, partitionWidth).getImage();
         }
         else{
             getRGBHistForMe = img;
@@ -122,7 +122,7 @@ public class ProcessedImage{
     public double getVariance(boolean forBlock, int firstX, int firstY, int partitionHeight, int partitionWidth){
         Image getVarForMe;
         if (forBlock){
-            getVarForMe = getBlock(firstX, firstY, partitionHeight, partitionWidth, new Time()).getImage();
+            getVarForMe = getBlock(firstX, firstY, partitionHeight, partitionWidth).getImage();
         }
         else{
             getVarForMe = img;
@@ -155,26 +155,21 @@ public class ProcessedImage{
         return variance;
     }
 
-    public ProcessedImage getBlock(int firstX, int firstY, int partitionHeight, int partitionWidth, Time cropTime){
-
-        cropTime.startTimer();
+    public ProcessedImage getBlock(int firstX, int firstY, int partitionHeight, int partitionWidth){
 
         Transform cropBlock = ImagesServiceFactory.makeCrop((float)firstX/width, (float)firstY/height, (float)(firstX+partitionWidth)/width, (float)(firstY+partitionHeight)/height);
         Image cropped = ImagesServiceFactory.makeImage(img.getImageData());
-
-        cropTime.endTimer();
-
-        return new ProcessedImage(imagesService.applyTransform(cropBlock, cropped));
+        return new ProcessedImage(imagesService.applyTransform(cropBlock, cropped),null,null);
     }
 
-    public Image getScaled(int x, int y, Time scaleTime){
+    public Image getScaled(int x, int y){
 
-        scaleTime.startTimer();
+
 
         Transform scaleTransform = ImagesServiceFactory.makeResize(x, y, true);
         Image scaled = imagesService.applyTransform(scaleTransform, img);
 
-        scaleTime.endTimer();
+
 
         return scaled;
     }

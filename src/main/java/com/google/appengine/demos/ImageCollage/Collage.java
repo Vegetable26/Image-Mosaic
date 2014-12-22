@@ -22,23 +22,11 @@ public class Collage {
     private  Crawler crawler;
     private int factor = 1;
     private List<AttributionCell> attributionTable = new ArrayList<AttributionCell>();
+    private int initialX;
+    private int initialY;
 
+    public Collage(Image inputImg, int depth, int inputThresh, int inputFactor, Crawler crawler, int initialX, int initialY){
 
-
-    private ArrayList<Time> scalingTime = new ArrayList<Time>();
-    private Time searchTime = new Time();
-    private Time compositeTime = new Time();
-    private Time cropTime = new Time();
-    private Time histogramTime = new Time();
-    private Time totalTime = new Time();
-
-
-<<<<<<< HEAD
-    public Collage(Image inputImg, int depth, double inputThresh, int inputFactor){
-
-=======
-    public Collage(Image inputImg, int depth, int inputThresh, int inputFactor, Crawler crawler){
->>>>>>> f0cfa30363e6c484c6bd25d7f8e24d952f9c1929
         factor = inputFactor;
         this.crawler = crawler;
         img = inputImg;
@@ -46,26 +34,16 @@ public class Collage {
         setMaxDepth(depth);
         height = inputImg.getHeight();
         width = inputImg.getWidth();
-<<<<<<< HEAD
         int limit = 1500000;
-        if (height*width > limit){  // Scales the image if the current image is too high resolution
-            double scalingFactor = Math.pow((double)limit/(height*width),.5);
-            img = processedImage.getScaled((int)(scalingFactor*width), (int)(scalingFactor*height), new Time());
-            processedImage = new ProcessedImage(img);
-            height = img.getHeight();
-            width = img.getWidth();
-        }
-=======
->>>>>>> f0cfa30363e6c484c6bd25d7f8e24d952f9c1929
+        this.initialX = initialX;
+        this.initialY = initialY;
         varianceThreshhold =  inputThresh;
         imgService = ImagesServiceFactory.getImagesService();
         System.out.println("Starting to Collage-ify");
 
         // Used for testing
 
-        for(int i=0;i<=maxDepth;i++){
-            scalingTime.add(new Time());
-        }
+
     }
 
     public  void setMaxDepth(int input){
@@ -86,16 +64,9 @@ public class Collage {
                 int halfWidth = partitionWidth / 2;
                 int halfHeight = partitionHeight / 2;
 
-                histogramTime.startTimer();
+
 
                 double original = colorMe.getVariance(false, firstX, firstY, Math.min(partitionHeight, height - firstY - 1), Math.min(partitionWidth, width - firstX - 1));
-<<<<<<< HEAD
-
-                histogramTime.endTimer();
-
-=======
-                //System.out.println(original);
->>>>>>> f0cfa30363e6c484c6bd25d7f8e24d952f9c1929
                 if (original > varianceThreshhold){
                     ArrayList<Composite> composites = new ArrayList<Composite>();
                     isBest = false;
@@ -103,14 +74,14 @@ public class Collage {
 
                     // Start cropTime
 
-                    Image upperLeft = colorBlock(firstX, firstY, halfHeight, halfWidth, depth, colorMe.getBlock(0, 0, halfHeight, halfWidth, cropTime)); // Upper Left
-                    Image upperRight = colorBlock(firstX + halfWidth, firstY, halfHeight, partitionWidth - halfWidth, depth, colorMe.getBlock(halfWidth, 0, halfHeight, partitionWidth - halfWidth,cropTime)); // Upper Right
-                    Image lowerLeft = colorBlock(firstX, firstY + halfHeight, partitionHeight-halfHeight, halfWidth, depth, colorMe.getBlock(0, halfHeight, partitionHeight-halfHeight, halfWidth,cropTime)); // Lower Left
-                    Image lowerRight = colorBlock(firstX + halfWidth, firstY + halfHeight, partitionHeight-halfHeight, partitionWidth - halfWidth, depth, colorMe.getBlock(halfWidth, halfHeight, partitionHeight-halfHeight, partitionWidth - halfWidth,cropTime)); // Lower Right
+                    Image upperLeft = colorBlock(firstX, firstY, halfHeight, halfWidth, depth, colorMe.getBlock(0, 0, halfHeight, halfWidth)); // Upper Left
+                    Image upperRight = colorBlock(firstX + halfWidth, firstY, halfHeight, partitionWidth - halfWidth, depth, colorMe.getBlock(halfWidth, 0, halfHeight, partitionWidth - halfWidth)); // Upper Right
+                    Image lowerLeft = colorBlock(firstX, firstY + halfHeight, partitionHeight-halfHeight, halfWidth, depth, colorMe.getBlock(0, halfHeight, partitionHeight-halfHeight, halfWidth)); // Lower Left
+                    Image lowerRight = colorBlock(firstX + halfWidth, firstY + halfHeight, partitionHeight-halfHeight, partitionWidth - halfWidth, depth, colorMe.getBlock(halfWidth, halfHeight, partitionHeight-halfHeight, partitionWidth - halfWidth)); // Lower Right
 
                     // End cropTime
 
-                    compositeTime.startTimer();
+
 
                     composites.add(ImagesServiceFactory.makeComposite(upperLeft,0,0,1f, Composite.Anchor.TOP_LEFT));
 
@@ -120,17 +91,10 @@ public class Collage {
 
                     composites.add(ImagesServiceFactory.makeComposite(lowerRight,(halfWidth)*factor, (halfHeight)*factor,1f,Composite.Anchor.TOP_LEFT));
 
-                    //System.out.println("At depth"+depth+"this is compositing"+composites.size()+"images" + firstX +',' +firstY);
-<<<<<<< HEAD
-
                     Image returnVal = imgService.composite(composites,partitionWidth*factor,partitionHeight*factor,0);
-
-                    compositeTime.endTimer();
 
                     return returnVal;
 
-=======
->>>>>>> f0cfa30363e6c484c6bd25d7f8e24d952f9c1929
 
                 }
                 else{
@@ -147,14 +111,15 @@ public class Collage {
     }
     private Image colorIn( int firstX, int firstY, int partitionHeight, int partitionWidth, int depth){
         // Have to perform a query
-        ProcessedImage processed =  crawler.ditherQuery(processedImage.getRGBHistogram(true, firstX, firstY, partitionHeight, partitionWidth),searchTime);
+        ProcessedImage processed =  crawler.ditherQuery(processedImage.getRGBHistogram(true, firstX, firstY, partitionHeight, partitionWidth));
 
         // Attribution Table for the collage
 
-        attributionTable.add(new AttributionCell(firstX,firstY,firstX+partitionWidth,firstY+partitionHeight,processed.getUsername(),processed.getUrl()));
-        System.out.println(processed.getUsername());
+        attributionTable.add(new AttributionCell(firstX+initialX,firstY+initialY,firstX+initialX+partitionWidth,firstY+initialY+partitionHeight,processed.getUsername(),processed.getUrl()));
 
-        return processed.getScaled(partitionWidth*factor,partitionHeight*factor,scalingTime.get(depth));
+        //System.out.println(processed.getUsername());
+
+        return processed.getScaled(partitionWidth*factor,partitionHeight*factor);
 
     }
     public List<AttributionCell> getAttributionTable(){
@@ -165,17 +130,6 @@ public class Collage {
         ArrayList<Composite>composites = new ArrayList<Composite>();
         composites.add(ImagesServiceFactory.makeComposite(processedImage.getImage(),0,0,(float)opacity, Composite.Anchor.TOP_LEFT));
         composites.add(ImagesServiceFactory.makeComposite(collage,0,0,.85f,Composite.Anchor.TOP_LEFT));
-
-        System.out.println("Cropping time took"+cropTime.getTotalTime());
-        for(int i=0;i<maxDepth;i++){
-            System.out.println("Scaling time took"+scalingTime.get(i).getTotalTime());
-        }
-        System.out.println("Search time took"+searchTime.getTotalTime());
-        System.out.println("Standard Deviation time took"+histogramTime.getTotalTime());
-        System.out.println("Composite time took"+compositeTime.getTotalTime());
-
-
-
         return imgService.composite(composites,width*factor,height*factor,0);
     }
     public class AttributionCell{

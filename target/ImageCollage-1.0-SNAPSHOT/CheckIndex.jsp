@@ -63,12 +63,7 @@
             }
         });
         e.preventDefault(); //STOP default action
-<<<<<<< HEAD
-        e.unbind(); //unbind. to stop multiple form submit.
-        alert("Deleted the checked images");
-=======
         //e.unbind(); //unbind. to stop multiple form submit.
->>>>>>> f0cfa30363e6c484c6bd25d7f8e24d952f9c1929
         });
     </script>
 

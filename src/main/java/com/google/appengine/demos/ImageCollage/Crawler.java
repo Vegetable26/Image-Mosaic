@@ -156,8 +156,8 @@ public class Crawler {
             return null;
         }
     }
-    public ProcessedImage ditherQuery(double[] rgbHistogram, Time queryTime){
-        queryTime.startTimer();
+    public ProcessedImage ditherQuery(double[] rgbHistogram){
+
         Vector vector = new Vector("", rgbHistogram);
         List<Vector> closest = index.query(vector, 3);
         Random random = new Random();
@@ -176,9 +176,6 @@ public class Crawler {
             String key = closest.get(whichOne).getKey();
             Entity closestEnt = datastore.get(KeyFactory.createKey("flickrPic", key));
             Image returnVal = ImagesServiceFactory.makeImage(((Blob)closestEnt.getProperty("blob")).getBytes());
-
-            queryTime.endTimer();
-
             return new ProcessedImage(returnVal,key.split("\\s")[0],key.split("\\s")[1]);
 
         }
