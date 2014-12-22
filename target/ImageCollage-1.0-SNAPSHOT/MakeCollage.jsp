@@ -20,7 +20,7 @@
 <html>
 
 <head>
-    <script src="/Users/compsci/Downloads/AbsoluteBeginners/scripts/jquery.imagemapster.js" type="text/javascript">
+    <script src="ImageMapster.js" type="text/javascript">
         $( '#myForm' ).submit( function( e ) {
             var formURL = $(this).attr("action");
             $.ajax( {
