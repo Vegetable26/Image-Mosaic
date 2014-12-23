@@ -46,11 +46,39 @@
                         coords: attribute.x1 +',' + attribute.y1 + ',' + attribute.x2 +',' + attribute.y2 ,
                         //coords: num.toString(attribute.x1) +',' + num.toString(attribute.y1) + ',' + num.toString(attribute.x2) +',' + num.toString(attribute.y2) ,
                         //href:attribute.url
-                        href:attribute.url
+                        href:attribute.trueUrl,
+                        target:"_blank"
                         }).appendTo('#mapId');
-                        $('<p>'+ resp.attributionTable[i].author +'</p>').appendTo('#loser');
+                        //$('<p>'+ resp.attributionTable[i].author +'</p>').appendTo('#Authors');
                     }
+                    $('<a>',{
+                        text: "Download image",
+                        download: "Collage.png",
+                        href:resp.url,
+                        click: function(){alert('Downloading image');}
+                        //href:"http://www.gotceleb.com/wp-content/uploads/celebrities/natalie-dormer/people-magazine-october-2014/Natalie-Dormer:-People-Magazine-2014--01-662x883.jpg"
+                    }).appendTo('#Authors');
 
+
+                    /*
+                    $('<a>',{
+                        text:'i am a link',
+                        href:'http://www.google.com',
+                        click:function(){alert('test');return false;}
+                    }).appendTo('body');
+
+                    */
+
+                    /*
+                    var newButton=$('<input/>').attr({
+                        type: "button",
+                        id: "field",
+                        value: 'Download image'
+                    });
+
+                    $("#Authors").append(newButton);
+                    */
+                    alert("got here");
 
                 }
             });
@@ -99,15 +127,14 @@
 
 <div id = "map">
     <map id = "mapId" name = "actualmap">
-        <area shape="rect" coords="0,0,1,1" href="http://cdn.images.express.co.uk/img/dynamic/79/590x/dormer1-475628.jpg">
+
     </map>
 </div>
 
 
 
-<div id ="loser">
-    <img id = "imgMe" src = "http://cdn.images.express.co.uk/img/dynamic/79/590x/dormer1-475628.jpg">
-    <p> Hi faggot </p>
+<div id ="Authors">
+    <a></a>
 </div>
 
 

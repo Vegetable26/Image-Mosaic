@@ -112,10 +112,12 @@ public class Collage {
     private Image colorIn( int firstX, int firstY, int partitionHeight, int partitionWidth, int depth){
         // Have to perform a query
         ProcessedImage processed =  crawler.ditherQuery(processedImage.getRGBHistogram(true, firstX, firstY, partitionHeight, partitionWidth));
-
+        if(depth<1){
+            processed = new ProcessedImage(processed.getSmallUrl(),processed.getUsername(),processed.getId());
+        }
         // Attribution Table for the collage
 
-        attributionTable.add(new AttributionCell(firstX+initialX,firstY+initialY,firstX+initialX+partitionWidth,firstY+initialY+partitionHeight,processed.getUsername(),processed.getUrl()));
+        attributionTable.add(new AttributionCell(firstX+initialX,firstY+initialY,firstX+initialX+partitionWidth,firstY+initialY+partitionHeight,processed.getUsername(),processed.getUrl(),processed.getId()));
 
         //System.out.println(processed.getUsername());
 
@@ -139,13 +141,29 @@ public class Collage {
         double y2;
         String author;
         String url;
-        public AttributionCell(double x1, double y1, double x2, double y2, String author, String url){
+        String trueUrl;
+        String id;
+        public AttributionCell(double x1, double y1, double x2, double y2, String author, String url, String id){
             this.x1 = x1;
             this.x2 = x2;
             this.y1 = y1;
             this.y2 = y2;
             this.author = author;
             this.url = url;
+            this.id = id;
+            findUrl();
+
+        }
+        private void findUrl(){
+            try {
+                String returnVal;
+                String codeNumber = url.split("[^a-zA-Z0-9 ]")[8];
+                trueUrl = codeNumber.split("_")[0];
+                trueUrl = "https://www.flickr.com/photos/" +  id + "/" + trueUrl;
+            }catch(Exception e){
+                System.out.println("Error at "+ url);
+
+            }
         }
     }
 

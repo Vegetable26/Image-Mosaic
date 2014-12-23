@@ -20,17 +20,19 @@ public class ProcessedImage{
     private double[] rgbHistogram;
     private byte[] imageBytes;
     private ImagesService imagesService = ImagesServiceFactory.getImagesService();
-
+    private String id = null;
     protected Image img;
     protected int width; // Width of the base image
     protected int height; // Height of the base image
     protected String username;
     protected String url;
-    public ProcessedImage(String url, String inputUser){
+
+    public ProcessedImage(String url, String inputUser, String id){
         this.url = url;
         readImage(url);
         getDim();
         username = inputUser;
+        this.id = id;
     }
     // To process a Photo retrieved from flickr, used in Crawler.find()
     public ProcessedImage(Photo photo, Flickr f){
@@ -38,14 +40,16 @@ public class ProcessedImage{
         readImage(url);
         getDim();
         readUsername(photo,f);
+        this.id = photo.getOwner().getId();
     }
 
-    // To process a Image
-    public ProcessedImage(Image photo, String url, String username){
+    // To process a Image from the query
+    public ProcessedImage(Image photo, String url, String username, String id, String smallUrl){
         img = photo;
         getDim();
         this.url = url;
         this.username = username;
+        this.id = id;
     }
     public ProcessedImage(Image photo){
         img = photo;
@@ -159,7 +163,7 @@ public class ProcessedImage{
 
         Transform cropBlock = ImagesServiceFactory.makeCrop((float)firstX/width, (float)firstY/height, (float)(firstX+partitionWidth)/width, (float)(firstY+partitionHeight)/height);
         Image cropped = ImagesServiceFactory.makeImage(img.getImageData());
-        return new ProcessedImage(imagesService.applyTransform(cropBlock, cropped),null,null);
+        return new ProcessedImage(imagesService.applyTransform(cropBlock, cropped),null,null, null, null);
     }
 
     public Image getScaled(int x, int y){
@@ -188,5 +192,12 @@ public class ProcessedImage{
 
     public Image getImage(){
         return img;
+    }
+    public String getSmallUrl(){
+        String returnVal = url.replace("t.jpg","m.jpg");
+        return returnVal;
+    }
+    public String getId(){
+        return id;
     }
 }

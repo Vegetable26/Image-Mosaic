@@ -108,10 +108,6 @@ public class CollageMaster {
     }
 
     public List<Collage.AttributionCell> getAttributionTable(){
-        System.out.println(attributionTable.size());
-        for(Collage.AttributionCell small:attributionTable){
-            System.out.println(small.x1 + "," + small.y1 + "," + small.x2 +"," + small.y2 + ","+ small.url);
-        }
         return attributionTable;
     }
     public int getX(){
