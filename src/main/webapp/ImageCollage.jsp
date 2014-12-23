@@ -52,6 +52,7 @@
     if (whichForm == 3){
         openMe = "CheckIndex.jsp";
     }
+
     xmlhttp.open("GET",openMe,true);
     xmlhttp.send();
     }

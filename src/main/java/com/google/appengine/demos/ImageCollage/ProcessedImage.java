@@ -1,5 +1,8 @@
 package com.google.appengine.demos.ImageCollage;
 
+// I changed the Constructors of ProcessedImage to allow for the attribution tables 12/21
+
+
 import com.flickr4java.flickr.Flickr;
 import com.flickr4java.flickr.people.PeopleInterface;
 import com.flickr4java.flickr.photos.*;
@@ -7,33 +10,29 @@ import com.google.appengine.api.images.*;
 import com.google.appengine.api.urlfetch.HTTPResponse;
 import com.google.appengine.api.urlfetch.URLFetchService;
 import com.google.appengine.api.urlfetch.URLFetchServiceFactory;
-
-
-
 import java.net.URL;
-import java.net.MalformedURLException;
-import java.io.InputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.nio.ByteBuffer;
-// Big changes: newest version
+
+
 
 public class ProcessedImage{
     private double[] average = new double[3];
     private double[] rgbHistogram;
     private byte[] imageBytes;
     private ImagesService imagesService = ImagesServiceFactory.getImagesService();
-
+    private String id = null;
     protected Image img;
     protected int width; // Width of the base image
     protected int height; // Height of the base image
     protected String username;
     protected String url;
-    public ProcessedImage(String url, String inputUser){
+
+    public ProcessedImage(String url, String inputUser, String id){
         this.url = url;
         readImage(url);
         getDim();
         username = inputUser;
+        this.id = id;
     }
     // To process a Photo retrieved from flickr, used in Crawler.find()
     public ProcessedImage(Photo photo, Flickr f){
@@ -41,9 +40,17 @@ public class ProcessedImage{
         readImage(url);
         getDim();
         readUsername(photo,f);
+        this.id = photo.getOwner().getId();
     }
 
-    // To process a Image
+    // To process a Image from the query
+    public ProcessedImage(Image photo, String url, String username, String id, String smallUrl){
+        img = photo;
+        getDim();
+        this.url = url;
+        this.username = username;
+        this.id = id;
+    }
     public ProcessedImage(Image photo){
         img = photo;
         getDim();
@@ -95,19 +102,6 @@ public class ProcessedImage{
         if (forBlock){
             getRGBHistForMe = getBlock(firstX, firstY, partitionHeight, partitionWidth).getImage();
         }
-        /*
-        double[] rgbHist = new double[24];
-        for (int j = 0; j < (forBlock ? partitionHeight : height); j++){
-            for (int i = 0; i < (forBlock ? partitionWidth : width); i++){
-                int[] rgb = RGBArray(img.getRGB(forBlock ? firstX+i : i, forBlock ? firstY+j : j));
-                for (int k = 0; k < 3; k++){
-                    int color = rgb[k];
-                    int bin = 255/color;
-                    rgbHist[k*8+bin]++;
-                }
-            }
-        }
-        */
         else{
             getRGBHistForMe = img;
         }
@@ -161,45 +155,26 @@ public class ProcessedImage{
             variance += squareAverage[color] - Math.pow(average[color],2);
         }
         //sum the variances
-        //square root the variance
+
         return variance;
     }
 
     public ProcessedImage getBlock(int firstX, int firstY, int partitionHeight, int partitionWidth){
+
         Transform cropBlock = ImagesServiceFactory.makeCrop((float)firstX/width, (float)firstY/height, (float)(firstX+partitionWidth)/width, (float)(firstY+partitionHeight)/height);
         Image cropped = ImagesServiceFactory.makeImage(img.getImageData());
-        return new ProcessedImage(imagesService.applyTransform(cropBlock, cropped));
+        return new ProcessedImage(imagesService.applyTransform(cropBlock, cropped),null,null, null, null);
     }
 
-/*
-    private int[] RGBArray(int code){
-        // Converts a pixel integer into a tuple[r,b,g]
-        int[] triple = new int[3];
-        Color c = new Color(code);
-        triple[0] = c.getRed();
-        triple[1] = c.getGreen();
-        triple[2] = c.getBlue();
-        return triple;
-    }
-
-    private int toPixel(double[] color){
-        // Converts a tuple[r,b,g] into a pixel integer
-        int rgb = 255;
-        rgb = (rgb << 8) + (int)color[0];
-        rgb = (rgb << 8) + (int)color[1];
-        rgb = (rgb << 8) + (int)color[2];
-        return rgb;
-    }
-
-    public double[] getAverage(){
-        return average;
-    }
-*/
-
-    // Scales an image to the given dimensions (x,y)
     public Image getScaled(int x, int y){
+
+
+
         Transform scaleTransform = ImagesServiceFactory.makeResize(x, y, true);
         Image scaled = imagesService.applyTransform(scaleTransform, img);
+
+
+
         return scaled;
     }
 
@@ -217,5 +192,12 @@ public class ProcessedImage{
 
     public Image getImage(){
         return img;
+    }
+    public String getSmallUrl(){
+        String returnVal = url.replace("t.jpg","m.jpg");
+        return returnVal;
+    }
+    public String getId(){
+        return id;
     }
 }
