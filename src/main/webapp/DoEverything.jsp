@@ -16,49 +16,10 @@
 
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 
-    <script>
-    //this function will display a form below the current page based on the input parameter whichForm
-    function showForm(whichForm){
-        var xmlhttp;
-        // code for IE7+, Firefox, Chrome, Opera, Safari
-        if (window.XMLHttpRequest){
-            xmlhttp=new XMLHttpRequest();
-        }
-        // code for IE6, IE5
-        else{
-        xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-        }
-        xmlhttp.onreadystatechange=function(){
-            if (xmlhttp.readyState==4 && xmlhttp.status==200){
-                //set the form div to have the html content defined by xmlhttp.open
-                var form = document.getElementById("form");
-                form.innerHTML=xmlhttp.responseText;
-                var myScripts = form.getElementsByTagName("script");
-                if (myScripts.length > 0) {
-                    for (i = 0; i < myScripts.length; i++){
-                    eval(myScripts[i].innerHTML);
-                    }
-                }
-            }
-        }
-        var openMe;
-        if (whichForm == 1){
-            openMe = "MakeCollage.jsp";
-        }
-        if (whichForm == 2){
-            openMe = "PopulateIndex.jsp";
-        }
-        if (whichForm == 3){
-            openMe = "CheckIndex.jsp";
-        }
-        xmlhttp.open("GET",openMe,true);
-        xmlhttp.send();
-    }
-    </script>
 
-
-
-
+    <%request.setAttribute("isApproved", 1);
+        System.out.println("just set that shit to approved in doEverything");
+    %>
 
 </head>
 

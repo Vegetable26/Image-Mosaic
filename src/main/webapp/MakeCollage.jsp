@@ -13,6 +13,7 @@
 <html>
 
 <head>
+
     <script src="ImageMapster.js" type="text/javascript">
         $( '#myForm' ).submit( function( e ) {
             var formURL = $(this).attr("action");
@@ -60,7 +61,12 @@
         } );
     </script>
 
-
+    <script>
+        alert("starting script");
+        if (document.getElementById("logOut") == null){
+            document.getElementById("logIn").style.visibility = 'visible';
+        }
+    </script>
     <script>
     var $body = $("body");
 
@@ -72,18 +78,10 @@
     });
     </script>
 
-    <script>
-    if (<%=request.getAttribute("isApproved")%> == 1){
-        document.getElementById("logIn").style.visibility='hidden';
-    }
-    </script>
-
-
 </head>
 
 <body>
 
-<<<<<<< HEAD
     <h3>Make a collage</h3>
         <form id="myForm" action="<%= blobstoreService.createUploadUrl("/upload") %>" method="post" enctype="multipart/form-data">
         <div>Choose the image you want to collage-ify</div>
@@ -105,46 +103,21 @@
 
     <div class="modal"></div>
 
-    <div class="logInOut" id="logIn">
+    <div class="logInOut" id="logIn" style="visibility:hidden">
     <a href="<%= userService.createLoginURL("/") %>">Log in</a>
     </div>
 
+    <div id = "map">
+        <map id = "mapId" name = "actualmap">
+
+        </map>
+    </div>
+
+
+
+    <div id ="Authors">
+        <a></a>
+    </div>
     </body>
 
     </html>
-=======
-<h3>Make a collage</h3>
-<form id="myForm" action="<%= blobstoreService.createUploadUrl("/upload") %>" method="post" enctype="multipart/form-data">
-    <div>Choose the image you want to collage-ify</div>
-    <div><input type="file" name="userPic"></div>
-    <div>Choose a theme for the collage</div>
-    <div><input type="text" name="theme"></div>
-    <div>enter the threshold</div>
-    <div><input type="text" name="threshold"></div>
-    <div>enter the max depth</div>
-    <div><input type="text" name="depth"></div>
-    <div>enter the scaling factor</div>
-    <div><input type="text" name="inputFactor"></div>
-    <div><input type="submit" value="make da collage"></div>
-</form>
-
-<div id="picDiv"></div>
-
-<div class="modal"></div>
-
-
-<div id = "map">
-    <map id = "mapId" name = "actualmap">
-
-    </map>
-</div>
-
-
-
-<div id ="Authors">
-    <a></a>
-</div>
-
-
-</body>
->>>>>>> 85078390ee3d8b3b54e75b7288dbaec51e5291b6

@@ -13,6 +13,7 @@
 <html>
 
 <head>
+
     <script src="ImageMapster.js" type="text/javascript">
         $( '#myForm' ).submit( function( e ) {
             var formURL = $(this).attr("action");
@@ -60,7 +61,12 @@
         } );
     </script>
 
-
+    <script>
+        alert("starting script");
+        if (document.getElementById("logOut") == null){
+            document.getElementById("logIn").style.visibility = 'visible';
+        }
+    </script>
     <script>
     var $body = $("body");
 
@@ -71,13 +77,6 @@
     $body.removeClass("loading");
     });
     </script>
-
-    <script>
-    if (<%=request.getAttribute("isApproved")%> == 1){
-        document.getElementById("logIn").style.visibility='hidden';
-    }
-    </script>
-
 
 </head>
 
@@ -104,11 +103,21 @@
 
     <div class="modal"></div>
 
-    <div class="logInOut" id="logIn">
+    <div class="logInOut" id="logIn" style="visibility:hidden">
     <a href="<%= userService.createLoginURL("/") %>">Log in</a>
     </div>
 
+    <div id = "map">
+        <map id = "mapId" name = "actualmap">
+
+        </map>
+    </div>
+
+
+
+    <div id ="Authors">
+        <a></a>
+    </div>
     </body>
 
     </html>
-

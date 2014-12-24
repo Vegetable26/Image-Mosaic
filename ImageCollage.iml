@@ -14,7 +14,7 @@
     </facet>
     <facet type="google-app-engine" name="Google App Engine">
       <configuration>
-        <sdk-home-path>$MAVEN_REPOSITORY$/com/google/appengine/appengine-java-sdk/1.9.15/appengine-java-sdk/appengine-java-sdk-1.9.15</sdk-home-path>
+        <sdk-home-path>/Users/nich/Documents/development/appengine-java-sdk-1.9.15</sdk-home-path>
       </configuration>
     </facet>
   </component>

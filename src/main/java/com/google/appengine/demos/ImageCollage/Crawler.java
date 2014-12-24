@@ -24,15 +24,26 @@ import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
+/*
+This class enables users to crawl flickr for images.
+It can also crawl the datastore for near
+ */
 public class Crawler {
+    //authentication for flickr API
     private String apiKey = "c3916472c30d567c38898c61ee7d0638";
     private String sharedSecret = "06cd65d9183f0d70";
+    //flickr object
     private Flickr f;
+    //object to search flickr
     private PhotosInterface finder;
+    //index built on LSH
     private Index index;
-
+    //the GAE datastore
     private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
+    /*
+    constructor for the crawler
+     */
     public Crawler() {
         //try to make the Flickr object
         try {
@@ -49,29 +60,43 @@ public class Crawler {
         index = new Index(hashFam, 5, 5);
     }
 
+    /*
+    inputs: String[] topics, the search parameters
+            int numImg, the number of images we want to get from flickr
+    Downloads numImg photos related to topics from flickr
+     */
     public void getPhotos(String[] topics, int numImg){
         PhotoList<Photo> photos = new PhotoList<Photo>();
         SearchParameters param = new SearchParameters();
         param.setTags(topics);
+        //we can only download images licensed with CC
+        param.setLicense("2");
         try {
             photos = finder.search(param,numImg,1);
             String searchParam = "";
+            //concatentate topics into a single string, searchParam
             for (int i = 0; i < topics.length; i++){
                 searchParam += topics[i];
                 if (i != topics.length-1){
                     searchParam += " ";
                 }
             }
+            //get the time of the search so that we can store it
             String when = new Date().toString();
             DateFormat df = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy");
+            //parse the String when into a Date object
+            //we need to do this to remove some of the precision of the long time
             Date date = df.parse(when);
             long time = date.getTime();
+            //make an Entity for the search
             Entity search = new Entity("search", date.toString());
             search.setProperty("time", time);
             System.out.println("The search occured at "+time);
             search.setProperty("searchParam", searchParam);
             search.setProperty("numImg", numImg);
+            //put the search into the datastore
             datastore.put(search);
+            //put the photos we found into the datastore
             addToDatastore(photos, time);
         }
         catch(Exception e) {
@@ -79,16 +104,22 @@ public class Crawler {
         }
     }
 
-    //inserts all of the photos in the list to the index
+    /*
+    inputs: PhotoList<Photo> photos, the photos we found using getPhotos
+            long time, the time at which the search was executed
+    adds all of the photos in photos to the datastore
+     */
     public void addToDatastore(PhotoList<Photo> photos, long time){
-
+        //iterate over all of the photos in the list
         for (Photo pic : photos){
             try {
+                //make a ProcessedImage for the photo
                 ProcessedImage processed = new ProcessedImage(pic, f);
+                //this makes it easy to get an rgb histogram for the photo
                 double[] rgbHist = processed.getRGBHistogram();
-
+                //the key is the photo's url, creator, and id
                 String key = processed.getUrl()+" "+processed.getUsername() +" " + processed.getId();
-                System.out.println("The key is "+key);
+                //set key as the key for the flickrPic
                 Entity flickrPic = new Entity("flickrPic", key);
                 for (int i = 0; i < rgbHist.length; i++){
                     double binVal = rgbHist[i];

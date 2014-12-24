@@ -88,7 +88,7 @@
     <table id="crawlerSearches" class="hoverTable">
         <tr>
             <th>Date</th>
-         3   <th>Search parameter</th>
+            <th>Search parameter</th>
             <th>Number of images</th>
         </tr>
     </table>
