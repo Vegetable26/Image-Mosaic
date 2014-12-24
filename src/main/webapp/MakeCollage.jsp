@@ -10,7 +10,6 @@
 <html>
 
 <head>
-<<<<<<< HEAD
     <script src="ImageMapster.js" type="text/javascript">
         $( '#myForm' ).submit( function( e ) {
             var formURL = $(this).attr("action");
@@ -24,8 +23,6 @@
 
                 success: function(resp){
 
-                    //alert( "Trying to parse json");
-                    //alert(JSON.stringify(resp));
                     $('<img>').attr({
                         src: resp.url,
                         height: resp.height,
@@ -34,30 +31,24 @@
                         id: 'collage',
                         name:'collage'
                         }).appendTo('#picDiv');
-                    //$('<img>').attr('src', resp.url,'usema                    p',"#actualmap",'width','1000','height','1000').appendTo('#picDiv');
 
-
-                   // alert("about to star the rest");
                     for(i = 0; i<resp.attributionTable.length;i++){
                         var attribute = resp.attributionTable[i];
-                        //alert(resp.attributionTable[i].author)
                         $('<area>').attr({
                         shape:'rect',
                         coords: attribute.x1 +',' + attribute.y1 + ',' + attribute.x2 +',' + attribute.y2 ,
-                        //coords: num.toString(attribute.x1) +',' + num.toString(attribute.y1) + ',' + num.toString(attribute.x2) +',' + num.toString(attribute.y2) ,
-                        //href:attribute.url
                         href:attribute.trueUrl,
                         target:"_blank"
                         }).appendTo('#mapId');
-                        //$('<p>'+ resp.attributionTable[i].author +'</p>').appendTo('#Authors');
                     }
-                    $('<a>',{
+                    var link = $('<a>',{
                         text: "Download image",
                         download: "Collage.png",
                         href:resp.url,
                         click: function(){alert('Downloading image');}
-                        //href:"http://www.gotceleb.com/wp-content/uploads/celebrities/natalie-dormer/people-magazine-october-2014/Natalie-Dormer:-People-Magazine-2014--01-662x883.jpg"
-                    }).appendTo('#Authors');
+                    });
+                    link.after('<button type="button">Click Me!</button>');
+                    link.appendTo('#Authors');
                 }
             });
             e.preventDefault();

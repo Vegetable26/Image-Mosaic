@@ -10,7 +10,6 @@
 <html>
 
 <head>
-<<<<<<< HEAD
     <script src="ImageMapster.js" type="text/javascript">
         $( '#myForm' ).submit( function( e ) {
             var formURL = $(this).attr("action");
@@ -51,35 +50,14 @@
                         }).appendTo('#mapId');
                         //$('<p>'+ resp.attributionTable[i].author +'</p>').appendTo('#Authors');
                     }
-                    $('<a>',{
+                    var link = $('<a>',{
                         text: "Download image",
                         download: "Collage.png",
                         href:resp.url,
                         click: function(){alert('Downloading image');}
-                        //href:"http://www.gotceleb.com/wp-content/uploads/celebrities/natalie-dormer/people-magazine-october-2014/Natalie-Dormer:-People-Magazine-2014--01-662x883.jpg"
-                    }).appendTo('#Authors');
-
-
-                    /*
-                    $('<a>',{
-                        text:'i am a link',
-                        href:'http://www.google.com',
-                        click:function(){alert('test');return false;}
-                    }).appendTo('body');
-
-                    */
-
-                    /*
-                    var newButton=$('<input/>').attr({
-                        type: "button",
-                        id: "field",
-                        value: 'Download image'
                     });
-
-                    $("#Authors").append(newButton);
-                    */
-                    alert("got here");
-
+                    link.after('<button type="button">Click Me!</button>');
+                    link.appendTo('#Authors');
                 }
             });
             e.preventDefault();

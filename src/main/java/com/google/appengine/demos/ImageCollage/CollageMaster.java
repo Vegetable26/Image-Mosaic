@@ -1,10 +1,19 @@
 package com.google.appengine.demos.ImageCollage;
 
+/*
+
+ Update: 12/23
+ Created the class
+
+ CollageMaster: Controls the many Collage threads that are called on an image. Produces the composited collage and
+ also produces the composited AttributionTable for the collage.
+
+*/
+
 import com.google.appengine.api.ThreadManager;
 import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.blobstore.BlobstoreInputStream;
 import com.google.appengine.api.images.*;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,14 +21,27 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadFactory;
 
-/**
- * Created by compsci on 12/22/14.
- */
+
 public class CollageMaster {
 
     private List<Collage.AttributionCell> attributionTable = new ArrayList<Collage.AttributionCell>();
-    private int width;
-    private int height;
+
+    // A composited list of the AttributionCell's of the sub-collages
+
+    private int width; // Width of the image to be collaged
+    private int height; // Height of the image to be collaged
+
+    /*
+
+    Controls the execution of multiple threads that will create the overall collage
+
+    Inputs: imgService: Google API ImagesService
+    blobKey: Blob key corresponding to the image to be collaged
+    depth: Maximum recursion depth of the collage
+    threshold: Variance threshhold of the collage
+    inputFactor: The scaling factor of the collage
+
+     */
 
     public Image getCollage(ImagesService imgService, BlobKey blobKey, int depth, int threshold, int inputFactor){
         try {
@@ -33,6 +55,7 @@ public class CollageMaster {
             width = image.getWidth();
             height = image.getHeight();
             int limit = 1000000;
+
 
             if (height*width > limit){  // Scales the image if the current image is too high resolution
                 double scalingFactor = Math.pow((double)limit/(height*width),.5);
