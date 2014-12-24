@@ -12,6 +12,7 @@ import java.util.Properties;
 
 public class ImageCollageServlet extends HttpServlet {
   @Override
+
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
     if (req.getParameter("testing") == null) {

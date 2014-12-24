@@ -85,9 +85,9 @@ public class Crawler {
         for (Photo pic : photos){
             try {
                 ProcessedImage processed = new ProcessedImage(pic, f);
-                double[] rgbHist = processed.getRGBHistogram(false, 0, 0, 0, 0);
+                double[] rgbHist = processed.getRGBHistogram();
 
-                String key = processed.getUrl()+" "+processed.getUsername();
+                String key = processed.getUrl()+" "+processed.getUsername() +" " + processed.getId();
                 System.out.println("The key is "+key);
                 Entity flickrPic = new Entity("flickrPic", key);
                 for (int i = 0; i < rgbHist.length; i++){
@@ -107,7 +107,7 @@ public class Crawler {
                 datastore.put(flickrPic);
             }
             catch (Exception e){
-                continue;
+
             }
         }
     }
@@ -162,7 +162,8 @@ public class Crawler {
             return null;
         }
     }
-    public Image ditherQuery(double[] rgbHistogram){
+    public ProcessedImage ditherQuery(double[] rgbHistogram){
+
         Vector vector = new Vector("", rgbHistogram);
         List<Vector> closest = index.query(vector, 3);
         Random random = new Random();
@@ -178,8 +179,10 @@ public class Crawler {
             whichOne = 2;
         }
         try {
-            Entity closestEnt = datastore.get(KeyFactory.createKey("flickrPic", closest.get(whichOne).getKey()));
-            return ImagesServiceFactory.makeImage(((Blob)closestEnt.getProperty("blob")).getBytes());
+            String key = closest.get(whichOne).getKey();
+            Entity closestEnt = datastore.get(KeyFactory.createKey("flickrPic", key));
+            Image returnVal = ImagesServiceFactory.makeImage(((Blob)closestEnt.getProperty("blob")).getBytes());
+            return new ProcessedImage(returnVal,key.split("\\s")[0],key.split("\\s")[1], key.split("\\s")[2]);
 
         }
         catch (Exception e){

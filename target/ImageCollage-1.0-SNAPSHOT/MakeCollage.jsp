@@ -10,32 +10,56 @@
     UserService userService = UserServiceFactory.getUserService();
 
 %>
-
 <html>
 
 <head>
+    <script src="ImageMapster.js" type="text/javascript">
+        $( '#myForm' ).submit( function( e ) {
+            var formURL = $(this).attr("action");
+            $.ajax( {
+                url: formURL,
+                type: 'POST',
+                data: new FormData( this ),
+                dataType: 'json',
+                processData: false,
+                contentType: false,
 
-    <script>
-    $( '#myForm' ).submit( function( e ) {
-        var formURL = $(this).attr("action");
-        $.ajax( {
-            url: formURL,
-            type: 'POST',
-            data: new FormData( this ),
-            processData: false,
-            contentType: false,
+                success: function(resp){
 
-            success: function(resp){
-                $('<img>').attr('src', resp).appendTo('#picDiv');
-                <% boolean submitted = true; %>
+                    $('<img>').attr({
+                        src: resp.url,
+                        height: resp.height,
+                        width:resp.width,
+                        usemap: '#actualmap',
+                        id: 'collage',
+                        name:'collage'
+                        }).appendTo('#picDiv');
+
+                    for(i = 0; i<resp.attributionTable.length;i++){
+                        var attribute = resp.attributionTable[i];
+                        $('<area>').attr({
+                        shape:'rect',
+                        coords: attribute.x1 +',' + attribute.y1 + ',' + attribute.x2 +',' + attribute.y2 ,
+                        href:attribute.trueUrl,
+                        target:"_blank"
+                        }).appendTo('#mapId');
+                    }
+                    var link = $('<a>',{
+                        text: "Download image",
+                        download: "Collage.png",
+                        href:resp.url,
+                        click: function(){alert('Downloading image');}
+                    });
+                    link.after('<button type="button">Click Me!</button>');
+                    link.appendTo('#Authors');
                 }
+            });
+            e.preventDefault();
+            //e.unbind(); //unbind. to stop multiple form submit.
 
-        });
-        e.preventDefault();
-        //e.unbind(); //unbind. to stop multiple form submit.
-
-    } );
+        } );
     </script>
+
 
     <script>
     var $body = $("body");
@@ -87,3 +111,4 @@
     </body>
 
     </html>
+

@@ -13,6 +13,7 @@ import com.google.appengine.api.images.*;
 public class EmailCollage {
 
     public static void sendMailTwo(String collageName, Image collage, String hisEmail){
+
         try {
             System.out.println(collage.getFormat());
             String msgBody = "FUCKKKK";
@@ -40,7 +41,9 @@ public class EmailCollage {
             e.printStackTrace();
         }
     }
+
     public static void sendMail(String collageName, Image collage,String hisEmail){
+
         try {
 
             String msgBody = "Trial run";

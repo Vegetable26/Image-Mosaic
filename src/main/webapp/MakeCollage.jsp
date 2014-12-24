@@ -10,32 +10,56 @@
     UserService userService = UserServiceFactory.getUserService();
 
 %>
-
 <html>
 
 <head>
+    <script src="ImageMapster.js" type="text/javascript">
+        $( '#myForm' ).submit( function( e ) {
+            var formURL = $(this).attr("action");
+            $.ajax( {
+                url: formURL,
+                type: 'POST',
+                data: new FormData( this ),
+                dataType: 'json',
+                processData: false,
+                contentType: false,
 
-    <script>
-    $( '#myForm' ).submit( function( e ) {
-        var formURL = $(this).attr("action");
-        $.ajax( {
-            url: formURL,
-            type: 'POST',
-            data: new FormData( this ),
-            processData: false,
-            contentType: false,
+                success: function(resp){
 
-            success: function(resp){
-                $('<img>').attr('src', resp).appendTo('#picDiv');
-                <% boolean submitted = true; %>
+                    $('<img>').attr({
+                        src: resp.url,
+                        height: resp.height,
+                        width:resp.width,
+                        usemap: '#actualmap',
+                        id: 'collage',
+                        name:'collage'
+                        }).appendTo('#picDiv');
+
+                    for(i = 0; i<resp.attributionTable.length;i++){
+                        var attribute = resp.attributionTable[i];
+                        $('<area>').attr({
+                        shape:'rect',
+                        coords: attribute.x1 +',' + attribute.y1 + ',' + attribute.x2 +',' + attribute.y2 ,
+                        href:attribute.trueUrl,
+                        target:"_blank"
+                        }).appendTo('#mapId');
+                    }
+                    var link = $('<a>',{
+                        text: "Download image",
+                        download: "Collage.png",
+                        href:resp.url,
+                        click: function(){alert('Downloading image');}
+                    });
+                    link.after('<button type="button">Click Me!</button>');
+                    link.appendTo('#Authors');
                 }
+            });
+            e.preventDefault();
+            //e.unbind(); //unbind. to stop multiple form submit.
 
-        });
-        e.preventDefault();
-        //e.unbind(); //unbind. to stop multiple form submit.
-
-    } );
+        } );
     </script>
+
 
     <script>
     var $body = $("body");
@@ -59,6 +83,7 @@
 
 <body>
 
+<<<<<<< HEAD
     <h3>Make a collage</h3>
         <form id="myForm" action="<%= blobstoreService.createUploadUrl("/upload") %>" method="post" enctype="multipart/form-data">
         <div>Choose the image you want to collage-ify</div>
@@ -87,3 +112,39 @@
     </body>
 
     </html>
+=======
+<h3>Make a collage</h3>
+<form id="myForm" action="<%= blobstoreService.createUploadUrl("/upload") %>" method="post" enctype="multipart/form-data">
+    <div>Choose the image you want to collage-ify</div>
+    <div><input type="file" name="userPic"></div>
+    <div>Choose a theme for the collage</div>
+    <div><input type="text" name="theme"></div>
+    <div>enter the threshold</div>
+    <div><input type="text" name="threshold"></div>
+    <div>enter the max depth</div>
+    <div><input type="text" name="depth"></div>
+    <div>enter the scaling factor</div>
+    <div><input type="text" name="inputFactor"></div>
+    <div><input type="submit" value="make da collage"></div>
+</form>
+
+<div id="picDiv"></div>
+
+<div class="modal"></div>
+
+
+<div id = "map">
+    <map id = "mapId" name = "actualmap">
+
+    </map>
+</div>
+
+
+
+<div id ="Authors">
+    <a></a>
+</div>
+
+
+</body>
+>>>>>>> 85078390ee3d8b3b54e75b7288dbaec51e5291b6
