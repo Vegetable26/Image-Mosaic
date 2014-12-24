@@ -79,7 +79,7 @@ public class Crawler {
         for (Photo pic : photos){
             try {
                 ProcessedImage processed = new ProcessedImage(pic, f);
-                double[] rgbHist = processed.getRGBHistogram(false, 0, 0, 0, 0);
+                double[] rgbHist = processed.getRGBHistogram();
 
                 String key = processed.getUrl()+" "+processed.getUsername() +" " + processed.getId();
                 System.out.println("The key is "+key);
@@ -101,7 +101,7 @@ public class Crawler {
                 datastore.put(flickrPic);
             }
             catch (Exception e){
-                continue;
+
             }
         }
     }
@@ -176,7 +176,7 @@ public class Crawler {
             String key = closest.get(whichOne).getKey();
             Entity closestEnt = datastore.get(KeyFactory.createKey("flickrPic", key));
             Image returnVal = ImagesServiceFactory.makeImage(((Blob)closestEnt.getProperty("blob")).getBytes());
-            return new ProcessedImage(returnVal,key.split("\\s")[0],key.split("\\s")[1], key.split("\\s")[2],key.split("\\s")[3]);
+            return new ProcessedImage(returnVal,key.split("\\s")[0],key.split("\\s")[1], key.split("\\s")[2]);
 
         }
         catch (Exception e){
