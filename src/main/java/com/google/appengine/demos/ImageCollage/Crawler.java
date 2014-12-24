@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.util.*;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 public class Crawler {
     private String apiKey = "c3916472c30d567c38898c61ee7d0638";
@@ -47,7 +49,7 @@ public class Crawler {
         index = new Index(hashFam, 5, 5);
     }
 
-    public PhotoList<Photo> getPhotos(String[] topics, int numImg){
+    public void getPhotos(String[] topics, int numImg){
         PhotoList<Photo> photos = new PhotoList<Photo>();
         SearchParameters param = new SearchParameters();
         param.setTags(topics);
@@ -60,21 +62,25 @@ public class Crawler {
                     searchParam += " ";
                 }
             }
-            Date time = new Date();
-            Entity search = new Entity("search", time.toString());
-            search.setProperty("time", time.getTime());
+            String when = new Date().toString();
+            DateFormat df = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy");
+            Date date = df.parse(when);
+            long time = date.getTime();
+            Entity search = new Entity("search", date.toString());
+            search.setProperty("time", time);
+            System.out.println("The search occured at "+time);
             search.setProperty("searchParam", searchParam);
             search.setProperty("numImg", numImg);
             datastore.put(search);
+            addToDatastore(photos, time);
         }
         catch(Exception e) {
             e.printStackTrace();
         }
-        return photos;
     }
 
     //inserts all of the photos in the list to the index
-    public void addToDatastore(PhotoList<Photo> photos){
+    public void addToDatastore(PhotoList<Photo> photos, long time){
 
         for (Photo pic : photos){
             try {
@@ -97,7 +103,7 @@ public class Crawler {
                     }
                 }
                 flickrPic.setProperty("blob", new Blob(processed.getImage().getImageData()));
-                flickrPic.setProperty("time", new Date().getTime());
+                flickrPic.setProperty("time", time);
                 datastore.put(flickrPic);
             }
             catch (Exception e){

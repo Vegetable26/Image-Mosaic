@@ -40,6 +40,7 @@ public class UploadServlet extends HttpServlet {
         resp.setContentType("text/html");
         resp.setCharacterEncoding("UTF-8");
         resp.getWriter().write(url+"=s1600");
+        blobstoreService.delete(blobKey);
         long end = System.currentTimeMillis();
         System.out.println("Execution:"+(end - start));
 
@@ -56,7 +57,7 @@ public class UploadServlet extends HttpServlet {
             ThreadFactory tf = ThreadManager.currentRequestThreadFactory();
             int width = image.getWidth();
             int height = image.getHeight();
-            int limit = 1000000;
+            int limit = 750000;
 
             if (height*width > limit){  // Scales the image if the current image is too high resolution
                 double scalingFactor = Math.pow((double)limit/(height*width),.5);

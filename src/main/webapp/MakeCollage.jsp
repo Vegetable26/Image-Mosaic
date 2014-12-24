@@ -3,9 +3,12 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ page import="com.google.appengine.api.blobstore.BlobstoreServiceFactory" %>
 <%@ page import="com.google.appengine.api.blobstore.BlobstoreService" %>
-
+<%@ page import="com.google.appengine.api.users.UserService" %>
+<%@ page import="com.google.appengine.api.users.UserServiceFactory" %>
 <%
     BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+    UserService userService = UserServiceFactory.getUserService();
+
 %>
 
 <html>
@@ -45,6 +48,12 @@
     });
     </script>
 
+    <script>
+    if (<%=request.getAttribute("isApproved")%> == 1){
+        document.getElementById("logIn").style.visibility='hidden';
+    }
+    </script>
+
 
 </head>
 
@@ -66,20 +75,14 @@
         </form>
 
     <div id="picDiv">
-    <%/*
-    if (submitted){
-    String url = (String)request.getParameter("url");
-    out.print(url);
 
-    while (url == null){
-        url = (String)request.getParameter("url");
-    }
-    out.print("<img src=\""+url+"\">");
-    }*/
-    %>
     </div>
 
     <div class="modal"></div>
+
+    <div class="logInOut" id="logIn">
+    <a href="<%= userService.createLoginURL("/") %>">Log in</a>
+    </div>
 
     </body>
 

@@ -36,12 +36,11 @@ public class CrawlerServlet extends HttpServlet {
             }
         }
         else {
-            System.out.println("get is "+ get);
             if (get.compareTo("crawlerSearches") == 0){
                 writeMe = getCrawlerSearches(datastore);
             }
             else {
-                writeMe = getImagesSince(get, datastore);
+                writeMe = getImages(get, datastore);
             }
             resp.setContentType("application/json");
             resp.setCharacterEncoding("UTF-8");
@@ -51,8 +50,7 @@ public class CrawlerServlet extends HttpServlet {
 
     private void crawl(String[] searchParam, int howMany){
         Crawler crawl = new Crawler();
-        PhotoList<Photo> photos = crawl.getPhotos(searchParam, howMany);
-        crawl.addToDatastore(photos);
+        crawl.getPhotos(searchParam, howMany);
     }
 
     private String getCrawlerSearches(DatastoreService datastore){
@@ -66,13 +64,12 @@ public class CrawlerServlet extends HttpServlet {
 
     }
 
-    private String getImagesSince(String time, DatastoreService datastore){
+    private String getImages(String time, DatastoreService datastore){
         DateFormat df = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy");
         try {
             Date date = df.parse(time);
-            System.out.println(date.toString());
-            System.out.println(date.getTime());
-            Filter sinceDate = new FilterPredicate("time", FilterOperator.GREATER_THAN_OR_EQUAL,
+            System.out.println("we want to get images that were searched for at time "+ date.getTime());
+            Filter sinceDate = new FilterPredicate("time", FilterOperator.EQUAL,
                     date.getTime());
             // Use class Query to assemble a query
             Query q = new Query("flickrPic").setFilter(sinceDate);

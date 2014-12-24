@@ -8,10 +8,6 @@
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"> -->
 
 
-        <servlet>
-            <servlet-name>ImageCollage</servlet-name>
-            <servlet-class>com.google.appengine.demos.ImageCollage.ImageCollageServlet</servlet-class>
-        </servlet>
 
         <servlet>
             <servlet-name>upload</servlet-name>
@@ -24,10 +20,6 @@
         </servlet>
 
 
-        <servlet-mapping>
-            <servlet-name>ImageCollage</servlet-name>
-            <url-pattern>/ImageCollage</url-pattern>
-        </servlet-mapping>
 
         <servlet-mapping>
             <servlet-name>upload</servlet-name>
@@ -40,7 +32,7 @@
         </servlet-mapping>
 
     <welcome-file-list>
-            <welcome-file>ImageCollage.jsp</welcome-file>
+            <welcome-file>Home.jsp</welcome-file>
         </welcome-file-list>
 
     </web-app>

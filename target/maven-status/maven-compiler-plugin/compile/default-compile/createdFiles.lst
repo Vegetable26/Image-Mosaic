@@ -6,5 +6,4 @@ com/google/appengine/demos/ImageCollage/Crawler.class
 com/google/appengine/demos/ImageCollage/EmailCollage.class
 com/google/appengine/demos/ImageCollage/Collage.class
 com/google/appengine/demos/ImageCollage/IProcessedImage.class
-com/google/appengine/demos/ImageCollage/ImageCollageServlet.class
 com/google/appengine/demos/ImageCollage/CrawlerServlet.class

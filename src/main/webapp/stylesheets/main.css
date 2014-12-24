@@ -2,10 +2,7 @@ body {
     font-family: Verdana, Helvetica, sans-serif;
     background-color: #FFFFCC;
 }
-<<<<<<< HEAD
 
-
-=======
 table#crawlerSearches {
     border-collapse: collapse;
 }
@@ -25,4 +22,9 @@ table#crawlerSearches {
 #crawlerSearches td:hover {
     cursor: pointer;
 }
->>>>>>> 29a825f45c35bf427a77e2efa98edf1dab5d5ca9
+
+div.logInOut {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+}

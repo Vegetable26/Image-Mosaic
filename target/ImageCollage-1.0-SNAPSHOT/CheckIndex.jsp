@@ -83,7 +83,7 @@
 <body>
 
     <h3>Check the index</h3>
-    <p>Click on one of the rows below to see all of the images since that search</p>
+    <p>Click on one of the rows below to see the images from that search</p>
     <div>
     <table id="crawlerSearches" class="hoverTable">
         <tr>
