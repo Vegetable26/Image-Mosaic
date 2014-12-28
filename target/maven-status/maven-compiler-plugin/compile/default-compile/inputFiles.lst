@@ -1,5 +1,6 @@
 /Users/nich/Documents/ImageCollage/src/main/java/com/google/appengine/demos/ImageCollage/CollageMaster.java
 /Users/nich/Documents/ImageCollage/src/main/java/com/google/appengine/demos/ImageCollage/Collage.java
+/Users/nich/Documents/ImageCollage/src/main/java/com/google/appengine/demos/ImageCollage/CollageTimer.java
 /Users/nich/Documents/ImageCollage/src/main/java/com/google/appengine/demos/ImageCollage/UploadServlet.java
 /Users/nich/Documents/ImageCollage/src/main/java/com/google/appengine/demos/ImageCollage/ProcessedImage.java
 /Users/nich/Documents/ImageCollage/src/main/java/com/google/appengine/demos/ImageCollage/Crawler.java

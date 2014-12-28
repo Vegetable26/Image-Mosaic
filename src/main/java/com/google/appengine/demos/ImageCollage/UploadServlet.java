@@ -23,7 +23,14 @@ import java.lang.Runnable;
 import com.google.appengine.api.ThreadManager;
 import java.util.concurrent.ThreadFactory;
 
+/*
+UploadServlet: this class's doPost method is called when a user submits the form
+to make a collage. It writes the url for the collage and the attribution mapping for
+each thumbnail into the collage to the response.
+ */
+
 public class UploadServlet extends HttpServlet {
+    //create a BlobstoreService so that we can serve the collage
     private BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
 
     @Override
@@ -31,31 +38,36 @@ public class UploadServlet extends HttpServlet {
             throws IOException {
         long start = System.currentTimeMillis();
 
-        //get the blob
+        //get the blob for the submitted image
         Map<String, BlobKey> blobs = blobstoreService.getUploadedBlobs(req);
         BlobKey blobKey = blobs.get("userPic");
-        ImagesService imgService = ImagesServiceFactory.getImagesService();
-        //get the collage
+        //get the rest of the parameters
         int depth = Integer.parseInt(req.getParameter("depth"));
         int threshold = Integer.parseInt(req.getParameter("threshold"));
         int inputFactor = Integer.parseInt(req.getParameter("inputFactor"));
-
-        System.out.println("made the collage object");
+        boolean smartSizing = Boolean.parseBoolean(req.getParameter("smartSizing"));
+        //begin making the collage
         CollageMaster master = new CollageMaster();
-        Image collage = master.getCollage(imgService, blobKey, depth, threshold, inputFactor);
+        ImagesService imgService = ImagesServiceFactory.getImagesService();
+        Image collage = master.getCollage(imgService, blobKey, depth, threshold, inputFactor, smartSizing);
+        //get the url for collage by adding it to the blobstore
         String url = imgService.getServingUrl(ServingUrlOptions.Builder.withBlobKey(toBlobstore(collage))) + "=s1600";
-        String returnURL = new Gson().toJson(new URLAndAttribute(url, master.getAttributionTable(), master.getX(), master.getY()));
-
+        //now get the url and attribute wrapped together in an object in JSON format
+        String urlAndAttribute = new Gson().toJson(new URLAndAttribute(url, master.getAttributionTable(), master.getX(), master.getY()));
+        //write the urlAndAttribute to the response
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
         blobstoreService.delete(blobKey);
-        resp.getWriter().write(returnURL);
+        resp.getWriter().write(urlAndAttribute);
         long end = System.currentTimeMillis();
-        System.out.println("Execution:" + (end - start));
+        //System.out.println("Execution:" + (end - start));
     }
 
-
-    public static BlobKey toBlobstore(Image uploadMe) throws FileNotFoundException,     FinalizationException, LockException, IOException {
+    /*
+    inputs: Image uploadMe, the image that is to be uploaded to the blobstore
+    returns the BlobKey for uploadMe
+     */
+    public static BlobKey toBlobstore(Image uploadMe){
         try {
             // Get a file service
             FileService fileService = FileServiceFactory.getFileService();
@@ -73,13 +85,24 @@ public class UploadServlet extends HttpServlet {
 
             // Now finalize
             writeChannel.closeFinally();
+            //return the blobKey for the file
             return fileService.getBlobKey(file);
         }
-        catch (Exception e){ e.printStackTrace();}
-        return null;
+        catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
     }
 
-    public class URLAndAttribute{
+    /*
+    URLAndAttribute wraps up the pertinent data for a completed collage:
+        -String url, the url of the collage image
+        -List<Collage.AttributionCell> attributionTable, which maps a pixel area to the url
+            of the thumbnail that is in the pixel area
+        -int width, the width of the collage
+        -int height, the height of the collage
+     */
+    class URLAndAttribute{
         String url;
         List<Collage.AttributionCell> attributionTable;
         int width;

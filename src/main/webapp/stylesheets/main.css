@@ -3,28 +3,34 @@ body {
     background-color: #FFFFCC;
 }
 
-table#crawlerSearches {
-    border-collapse: collapse;
-}
-#crawlerSearches tr {
-    background-color: #eee;
-    border-top: 1px solid #fff;
-}
-#crawlerSearches tr:hover {
-    background-color: #ccc;
-}
-#crawlerSearches th {
-    background-color: #fff;
-}
-#crawlerSearches th, #crawlerSearches td {
-    padding: 3px 5px;
-}
-#crawlerSearches td:hover {
-    cursor: pointer;
-}
-
 div.logInOut {
     position: absolute;
     right: 20px;
     top: 20px;
+}
+
+.button {
+    font: bold 11px Arial;
+    text-decoration: none;
+    background-color: #EEEEEE;
+    color: #333333;
+    padding: 2px 6px 2px 6px;
+    border-top: 1px solid #CCCCCC;
+    border-right: 1px solid #333333;
+    border-bottom: 1px solid #333333;
+    border-left: 1px solid #CCCCCC;
+}
+
+#divInfoBox{
+    background-color: #eee;
+    z-index : 1000;
+    display: inline-block;
+}
+#mapId{
+    z-index: 0;
+}
+
+#authAndTitle{
+    display: inline-block;
+    float: right;
 }

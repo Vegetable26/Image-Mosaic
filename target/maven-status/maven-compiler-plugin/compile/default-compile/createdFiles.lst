@@ -1,5 +1,6 @@
 com/google/appengine/demos/ImageCollage/Collage$AttributionCell.class
 com/google/appengine/demos/ImageCollage/RunnableCollage.class
+com/google/appengine/demos/ImageCollage/CollageTimer.class
 com/google/appengine/demos/ImageCollage/UploadServlet.class
 com/google/appengine/demos/ImageCollage/UploadServlet$URLAndAttribute.class
 com/google/appengine/demos/ImageCollage/ProcessedImage.class

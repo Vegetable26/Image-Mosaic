@@ -16,14 +16,21 @@
 
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 
+    <script>
+        var $body = $("body");
 
-    <%request.setAttribute("isApproved", 1);
-        System.out.println("just set that shit to approved in doEverything");
-    %>
+        $(document).ajaxStart( function() {
+            $body.addClass("loading");
+        });
+        $(document).ajaxStop( function() {
+            $body.removeClass("loading");
+        });
+    </script>
 
 </head>
 
 <body>
+
     <h3>Do you want to: </h3>
     <button type="button" onclick="showForm(1)">Make a collage</button>
     <button type="button" onclick="showForm(2)">Populate the index</button>
@@ -31,11 +38,9 @@
 
     <div id="form"></div>
 
-    <div class="modal"></div>
 
     <div class="logInOut" id="logOut">
     <a href="<%= userService.createLogoutURL("/") %>">Log out</a>
     </div>
-
     </body>
 </html>
