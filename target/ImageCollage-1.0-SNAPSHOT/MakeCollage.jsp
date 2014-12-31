@@ -104,7 +104,7 @@
                     $('#mapId').on("mouseover", "area", function() {
                         //if we are, do the same thing as before
                         var info = this.id.split(",");
-                        showInfoBox(info[0], info[1], info[2], info[3], this);
+                        showInfoBox(info[0], info[1], info[2], info[3], info[4], this);
                         clearTimeout(thisTimer);
                     });
                     //now we need to hide the old popup
@@ -189,7 +189,9 @@
         <form id="myForm" action="<%= blobstoreService.createUploadUrl("/upload") %>" method="post" enctype="multipart/form-data">
         <div>Choose the image for which you want to make a collage</div>
             <br>
-        <div><input type="file" name="userPic"></div>
+        <div>
+            <input type="file" name="userPic" accept="image/png, image/gif, image/jpeg, image/bmp, image/tiff, image/ico, image/webp" required>
+        </div>
             <br>
         <div>Threshold: when should we divide a block? Larger values will result in dividng less often.</div>
             <br>

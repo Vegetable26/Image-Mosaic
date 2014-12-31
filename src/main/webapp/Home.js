@@ -20,7 +20,7 @@ function showForm(whichForm){
     xmlhttp.onreadystatechange=function(){
         if (xmlhttp.readyState==4 && xmlhttp.status==200){
             //set the form div to have the html content defined by xmlhttp.open
-            var form = document.getElementById("form");
+            var form = document.getElementById("content");
             form.innerHTML=xmlhttp.responseText;
             var myScripts = form.getElementsByTagName("script");
             if (myScripts.length > 0) {
@@ -30,22 +30,16 @@ function showForm(whichForm){
             }
         }
     };
-    var openMe;
-    if (whichForm == 1){
-        openMe = "MakeCollage.jsp";
-    }
-    if (whichForm == 2){
-        openMe = "PopulateIndex.jsp";
-    }
-    if (whichForm == 3){
-        openMe = "CheckIndex.jsp";
-    }
+    var openMe = whichForm;
     xmlhttp.open("GET",openMe,true);
     xmlhttp.send();
 }
 
+$(".link").on("click", function() {
+    showForm($(this).attr("href"));
+});
 //this function will display a page below the current page based on the input parameter isApproved
-
+/*
 function showPage(isApproved){
     var xmlhttp;
     // code for IE7+, Firefox, Chrome, Opera, Safari
@@ -85,4 +79,4 @@ function showPage(isApproved){
     }
     xmlhttp.open("GET",openMe,true);
     xmlhttp.send();
-}
+}*/

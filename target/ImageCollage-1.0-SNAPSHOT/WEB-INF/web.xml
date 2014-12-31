@@ -19,6 +19,31 @@
             <servlet-class>com.google.appengine.demos.ImageCollage.CrawlerServlet</servlet-class>
         </servlet>
 
+        <servlet>
+            <servlet-name>home</servlet-name>
+            <servlet-class>com.google.appengine.demos.ImageCollage.HomeServlet</servlet-class>
+        </servlet>
+
+        <servlet>
+            <servlet-name>checkIndex</servlet-name>
+            <servlet-class>com.google.appengine.demos.ImageCollage.CheckIndexServlet</servlet-class>
+        </servlet>
+        <servlet>
+            <servlet-name>populateIndex</servlet-name>
+            <servlet-class>com.google.appengine.demos.ImageCollage.PopulateIndexServlet</servlet-class>
+        </servlet>
+        <servlet>
+            <servlet-name>gallery</servlet-name>
+            <servlet-class>com.google.appengine.demos.ImageCollage.GalleryServlet</servlet-class>
+        </servlet>
+        <servlet>
+            <servlet-name>contact</servlet-name>
+            <servlet-class>com.google.appengine.demos.ImageCollage.ContactServlet</servlet-class>
+        </servlet>
+        <servlet>
+            <servlet-name>gettingStarted</servlet-name>
+            <servlet-class>com.google.appengine.demos.ImageCollage.GettingStartedServlet</servlet-class>
+        </servlet>
 
 
         <servlet-mapping>
@@ -31,8 +56,37 @@
             <url-pattern>/crawl</url-pattern>
         </servlet-mapping>
 
+        <servlet-mapping>
+            <servlet-name>home</servlet-name>
+            <url-pattern>/</url-pattern>
+        </servlet-mapping>
+
+        <servlet-mapping>
+            <servlet-name>checkIndex</servlet-name>
+            <url-pattern>/check_index</url-pattern>
+        </servlet-mapping>
+
+        <servlet-mapping>
+            <servlet-name>populateIndex</servlet-name>
+            <url-pattern>/populate_index</url-pattern>
+        </servlet-mapping>
+
+        <servlet-mapping>
+            <servlet-name>gallery</servlet-name>
+            <url-pattern>/gallery</url-pattern>
+        </servlet-mapping>
+
+        <servlet-mapping>
+            <servlet-name>contact</servlet-name>
+            <url-pattern>/contact</url-pattern>
+        </servlet-mapping>
+        <servlet-mapping>
+            <servlet-name>gettingStarted</servlet-name>
+            <url-pattern>/getting_started</url-pattern>
+        </servlet-mapping>
+
     <welcome-file-list>
-            <welcome-file>Home.jsp</welcome-file>
+            <welcome-file>home</welcome-file>
         </welcome-file-list>
 
     </web-app>

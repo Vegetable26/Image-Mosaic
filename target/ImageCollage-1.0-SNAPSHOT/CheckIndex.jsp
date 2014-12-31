@@ -1,9 +1,9 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
+<link href="../../stylesheets/CrawlerSearches.css" rel="stylesheet">
 
-<html>
-<head>
-
+<t:template isApproved="${isApproved}" log="${log}">
+    <jsp:attribute name="scripts">
     <script>
         $("#deleteImgs").submit(function(e) {
             var getData = $(this).serializeArray();
@@ -69,16 +69,12 @@
             });
         });
         </script>
-
-
     <script src="Loading.js">
     </script>
 
-    </head>
+    </jsp:attribute>
 
-<body>
-
-    <h3>Check the index</h3>
+    <jsp:attribute name="content">
     <p>Click on one of the rows below to see the images from that search</p>
     <div>
     <table id="crawlerSearches" class="hoverTable">
@@ -93,9 +89,8 @@
 
     <div>
     <form id="deleteImgs" action="/crawl" method="GET">
-
     </form>
     </div>
+    </jsp:attribute>
 
-</body>
-</html>
+</t:template>

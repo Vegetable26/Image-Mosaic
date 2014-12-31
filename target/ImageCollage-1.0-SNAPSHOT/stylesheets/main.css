@@ -1,6 +1,7 @@
 body {
     font-family: Verdana, Helvetica, sans-serif;
     background-color: #FFFFCC;
+    background: url('cowboy.jpg');
 }
 
 div.logInOut {

@@ -1,31 +1,30 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
+<link href="../../stylesheets/CrawlerSearches.css" rel="stylesheet">
 
-<html>
-<head>
-
+<t:template isApproved="${isApproved}" log="${log}">
+    <jsp:attribute name="scripts">
     <script>
-        $("#deleteImgs").submit(function(e) {
-            var getData = $(this).serializeArray();
-            var formURL = $(this).attr("action");
-            $.ajax( {
-                url : formURL,
-                type: "POST",
-                data : getData,
-                success:function(data, textStatus, jqXHR)
-                {
-                    //data: return data from server
-                    alert("Deleted the checked images");
+        $(function() {
+            $("#deleteImgs").submit(function (e) {
+                var getData = $(this).serializeArray();
+                var formURL = $(this).attr("action");
+                $.ajax({
+                    url: formURL,
+                    type: "POST",
+                    data: getData,
+                    success: function (data, textStatus, jqXHR) {
+                        //data: return data from server
+                        alert("Deleted the checked images");
 
-                },
-                error: function(jqXHR, textStatus, errorThrown)
-                {
-                    //if fails
-                }
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        //if fails
+                    }
+                });
+                e.preventDefault(); //STOP default action
             });
-            e.preventDefault(); //STOP default action
         });
-
         /*
          This function builds the table of crawlerSearches by making a GET request and reading
          the returned JSON
@@ -40,7 +39,9 @@
                 });
             });
         }
-        getSearches();
+        $(function () {
+            getSearches();
+        });
         /*
          This function allows the user to click on one of the rows in the crawlerSearches table
          and view all of the images corresponding to that search
@@ -70,15 +71,9 @@
         });
         </script>
 
+    </jsp:attribute>
 
-    <script src="Loading.js">
-    </script>
-
-    </head>
-
-<body>
-
-    <h3>Check the index</h3>
+    <jsp:attribute name="content">
     <p>Click on one of the rows below to see the images from that search</p>
     <div>
     <table id="crawlerSearches" class="hoverTable">
@@ -93,9 +88,8 @@
 
     <div>
     <form id="deleteImgs" action="/crawl" method="GET">
-
     </form>
     </div>
+    </jsp:attribute>
 
-</body>
-</html>
+</t:template>
