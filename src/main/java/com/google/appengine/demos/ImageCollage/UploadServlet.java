@@ -45,7 +45,11 @@ public class UploadServlet extends HttpServlet {
         int depth = Integer.parseInt(req.getParameter("depth"));
         int threshold = Integer.parseInt(req.getParameter("threshold"));
         int inputFactor = Integer.parseInt(req.getParameter("inputFactor"));
-        boolean smartSizing = Boolean.parseBoolean(req.getParameter("smartSizing"));
+        boolean smartSizing = false;
+        String smartSizingString = req.getParameter("smartSizing");
+        if (smartSizingString != null && smartSizingString.compareTo("on") == 0){
+            smartSizing = true;
+        }
         //begin making the collage
         CollageMaster master = new CollageMaster();
         ImagesService imgService = ImagesServiceFactory.getImagesService();

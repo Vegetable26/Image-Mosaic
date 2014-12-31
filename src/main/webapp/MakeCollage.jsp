@@ -189,7 +189,9 @@
         <form id="myForm" action="<%= blobstoreService.createUploadUrl("/upload") %>" method="post" enctype="multipart/form-data">
         <div>Choose the image for which you want to make a collage</div>
             <br>
-        <div><input type="file" name="userPic"></div>
+        <div>
+            <input type="file" name="userPic" accept="image/png, image/gif, image/jpeg, image/bmp, image/tiff, image/ico, image/webp" required>
+        </div>
             <br>
         <div>Threshold: when should we divide a block? Larger values will result in dividng less often.</div>
             <br>

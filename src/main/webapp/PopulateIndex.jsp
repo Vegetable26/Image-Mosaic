@@ -1,54 +1,53 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
-<html>
-
-<head>
-
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-
-<script>
-    $(function() {
-        //alert("mmmmk");
-        $("#theForm").submit(function (e) {
-            var getData = $(this).serializeArray();
-            var formURL = $(this).attr("action");
-            $.ajax({
-                url: formURL,
-                type: "GET",
-                data: getData,
-                success: function (data, textStatus, jqXHR) {
-                    //data: return data from server
-                },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    //if fails
-                }
+<%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
+<t:template isApproved="${isApproved}" log="${log}">
+    <jsp:attribute name="scripts">
+        <script>
+            $(function() {
+                $('#alert').hide();
+                $("#theForm").submit(function (e) {
+                    $('#alert').hide();
+                    e.preventDefault(); //STOP default action
+                    var inputs = $(this).find('.form-control');
+                    $.ajax({
+                        url: "/crawl",
+                        type: "GET",
+                        data: "searchParam="+inputs[0].value+"&howMany="+inputs[1].value,
+                        success: function (data, textStatus, jqXHR) {
+                            $('#alert').show();
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            console.log("failed");
+                        }
+                    });
+                });
             });
-            e.preventDefault(); //STOP default action
-        });
-    });
-</script>
+        </script>
 
-<script src="Loading.js">
-</script>
+    </jsp:attribute>
 
+    <jsp:attribute name="content">
+        <div class="inner cover">
+            <div class="col-sm-12">
+                <div id="alert" class="alert alert-success">
+                    <span class='glyphicon glyphicon-floppy-saved'></span><strong> Download complete</strong>
+                </div>
+                <form id = "theForm" action="/crawl" method="GET" role="form">
+                    <div class="form-group">
+                        <label for="searchParam">What should we search flickr for?</label>
+                        <input class="form-control" type="text" name="searchParam" id="searchParam" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="howMany">How many images should we download?</label>
+                        <div><input class="form-control" type="number" name="howMany" id="howMany" min="1" max="100" required></div>
+                    </div>
+                <div><input id="submit" type="submit" class="btn btn-default" value="Download photos"></div>
+                </form>
+            </div>
+        </div>
+        <div class="modal"></div>
+    </jsp:attribute>
 
-</head>
-
-<body>
-
-<h3>Populate the index</h3>
-<form id = "theForm" action="/crawl" method="GET">
-<div>What should we search flickr for</div>
-<div><input type="text" name="searchParam"></div>
-<div>how many of these images should we pull</div>
-<div><input type="text" name="howMany"></div>
-<div><input id="submit" type="submit" value="crawl this"></div>
-</form>
-
-    <div class="modal"></div>
-
-
-    </body>
-
-</html>
+</t:template>
