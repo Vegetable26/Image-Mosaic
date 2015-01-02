@@ -10,8 +10,8 @@
 
 
         <servlet>
-            <servlet-name>upload</servlet-name>
-            <servlet-class>com.google.appengine.demos.ImageCollage.UploadServlet</servlet-class>
+            <servlet-name>makeMosaic</servlet-name>
+            <servlet-class>com.google.appengine.demos.ImageCollage.MakeMosaicServlet</servlet-class>
         </servlet>
 
         <servlet>
@@ -47,8 +47,8 @@
 
 
         <servlet-mapping>
-            <servlet-name>upload</servlet-name>
-            <url-pattern>/upload</url-pattern>
+            <servlet-name>makeMosaic</servlet-name>
+            <url-pattern>/make_mosaic</url-pattern>
         </servlet-mapping>
 
         <servlet-mapping>

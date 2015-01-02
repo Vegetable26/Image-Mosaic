@@ -2,8 +2,10 @@
 <%@tag description="Overall Page template" pageEncoding="UTF-8"%>
 <%@ attribute name="content" fragment="true" %>
 <%@ attribute name="scripts" fragment="true" %>
+<%@ attribute name="wide" fragment="true" %>
 <%@attribute name="isApproved" required="true"%>
 <%@attribute name="log" required="true"%>
+<%@attribute name="action" required="false"%>
 
 <html>
 
@@ -23,7 +25,6 @@
 
     <!-- Custom styles for this template -->
     <link href="../../stylesheets/cover.css" rel="stylesheet">
-    <link href="../../stylesheets/LoadingGif.css" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -51,70 +52,62 @@
 </head>
 
 <body>
+
 <div class="site-wrapper">
 
-    <div class="site-wrapper-inner">
 
-        <div class="cover-container">
-
-            <!-- Fixed navbar -->
-            <nav class="navbar navbar-default navbar-fixed-top">
-                <div class="container">
-                    <div class="navbar-header">
-                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                            <span class="sr-only">Toggle navigation</span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                        </button>
-                        <a class="navbar-brand" href="/">Image Collage</a>
-                    </div>
-                    <div id="navbar" class="navbar-collapse collapse">
-                        <ul class="nav navbar-nav navbar-right">
-                            <li><a class="link" href="getting_started">Getting Started</a></li>
-                            <li><a class="link" href="make_mosaic">Make a Mosaic</a></li>
-                            <li><a class="link" href="gallery">Gallery</a></li>
-                            <% if (isApproved.compareTo("1") == 0){
-                                out.println("<li><a class=\"link\" href=\"check_index\">Check Index</a></li>");
-                                out.println("<li><a class=\"link\" href=\"populate_index\">Populate Index</a></li>");
-                            }
-                            %>
-                            <li><a href="contact">Contact</a></li>
-                            <%
-                                if (isApproved.compareTo("1") == 0){
-                                    out.println("<li><a href=\"" + log +  "\">Log Out</a></li>");
-                                }
-                                else{
-                                    out.println("<li><a href=\"" + log +  "\">Log In</a></li>");
-                                }
-                            %>
-                        </ul>
-                    </div><!--/.nav-collapse -->
-                </div>
-            </nav>
-
-            <jsp:invoke fragment="content"/>
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">Image Collage</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="/getting_started">Getting Started</a></li>
+                    <li><a href="/make_mosaic">Make a Mosaic</a></li>
+                    <li><a href="gallery">Gallery</a></li>
+                    <% if (isApproved.compareTo("1") == 0){
+                        out.println("<li><a href=\"populate_index\">Populate Index</a></li>");
+                        out.println("<li><a href=\"check_index\">Check Index</a></li>");
+                    }
+                    %>
+                    <li><a href="contact">Contact</a></li>
+                    <%
+                        if (isApproved.compareTo("1") == 0){
+                            out.println("<li><a href=\"" + log +  "\">Log Out</a></li>");
+                        }
+                        else{
+                            out.println("<li><a href=\"" + log +  "\">Log In</a></li>");
+                        }
+                    %>
+                </ul>
+            </div><!--/.nav-collapse -->
+        </div>
+    </nav>
+    <jsp:invoke fragment="content"/>
 
 
 
-            <div class="mastfoot">
-                <div class="inner">
-                    <p>&copy; 2014-2015</a>, Joseph Hwang and Nicholas Kwon.</p>
-                </div>
+
             </div>
 
-        </div>
 
+<footer class="footer">
+    <div class="container">
+        <p style="line-height: 60px">&copy; 2014-2015</a>, Joseph Hwang and Nicholas Kwon.</p>
     </div>
-
-</div>
-
+</footer>
 <!-- Bootstrap core JavaScript
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-<!--<script src="../../dist/js/bootstrap.min.js"></script>
-<script src="../../assets/js/docs.min.js"></script>-->
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<!--<script src="../../assets/js/docs.min.js"></script>-->
 <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
 <!--<script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>-->
 </body>

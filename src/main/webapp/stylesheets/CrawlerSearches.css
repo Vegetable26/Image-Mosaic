@@ -1,4 +1,4 @@
-table#crawlerSearches {
+/*table#crawlerSearches {
     border-collapse: collapse;
 }
 #crawlerSearches tr {
@@ -13,7 +13,7 @@ table#crawlerSearches {
 }
 #crawlerSearches th, #crawlerSearches td {
     padding: 3px 5px;
-}
+}*/
 #crawlerSearches td:hover {
     cursor: pointer;
 }
