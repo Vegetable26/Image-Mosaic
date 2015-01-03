@@ -25,6 +25,7 @@
 
     <!-- Custom styles for this template -->
     <link href="../../stylesheets/cover.css" rel="stylesheet">
+    <link href="../../stylesheets/LoadingGif.css" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -45,6 +46,8 @@
             $(document).ajaxStop(function () {
                 $body.removeClass("loading");
             });
+            var height = $('#navbar').height();
+            $body.css("padding-top", height+"px");
         });
     </script>
 
@@ -71,7 +74,6 @@
                 <ul class="nav navbar-nav navbar-right">
                     <li><a href="/getting_started">Getting Started</a></li>
                     <li><a href="/make_mosaic">Make a Mosaic</a></li>
-                    <li><a href="gallery">Gallery</a></li>
                     <% if (isApproved.compareTo("1") == 0){
                         out.println("<li><a href=\"populate_index\">Populate Index</a></li>");
                         out.println("<li><a href=\"check_index\">Check Index</a></li>");
@@ -83,7 +85,7 @@
                             out.println("<li><a href=\"" + log +  "\">Log Out</a></li>");
                         }
                         else{
-                            out.println("<li><a href=\"" + log +  "\">Log In</a></li>");
+                            out.println("<li><a href=\"" + log +  "\">Approved User?<br>Log In</a></li>");
                         }
                     %>
                 </ul>
@@ -97,6 +99,7 @@
 
             </div>
 
+<div class="modal"></div>
 
 <footer class="footer">
     <div class="container">

@@ -1,7 +1,6 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <link href="../../stylesheets/CrawlerSearches.css" rel="stylesheet">
-<link href="../../stylesheets/LoadingGif.css" rel="stylesheet">
 
 <style>
     body, .site-wrapper{
@@ -149,7 +148,6 @@
 
                 </table>
             </div>
-            <div class="modal"></div>
 
             <form id="deleteImgs" action="/crawl" method="GET">
                     <div class="row" id="picRow">

@@ -53,7 +53,6 @@
                 </div>
             </div>
         </div>
-        <div class="modal"></div>
     </jsp:attribute>
 
 </t:template>

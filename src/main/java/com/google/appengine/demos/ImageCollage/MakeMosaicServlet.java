@@ -29,7 +29,7 @@ to make a collage. It writes the url for the collage and the attribution mapping
 each thumbnail into the collage to the response.
  */
 
-public class UploadServlet extends HttpServlet {
+public class MakeMosaicServlet extends HttpServlet {
     //create a BlobstoreService so that we can 1) get the user's photo; 2) serve the collage
     private BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
 
@@ -39,7 +39,7 @@ public class UploadServlet extends HttpServlet {
         try {
             req.setAttribute("isApproved", status[0]);
             req.setAttribute("log", status[1]);
-            req.setAttribute("action", blobstoreService.createUploadUrl("/upload"));
+            req.setAttribute("action", blobstoreService.createUploadUrl("/make_mosaic"));
             req.getRequestDispatcher("MakeCollage.jsp").forward(req, resp);
         }
         catch (Exception e){
@@ -58,12 +58,13 @@ public class UploadServlet extends HttpServlet {
         //get the rest of the parameters
         int depth = Integer.parseInt(req.getParameter("depth"));
         int threshold = Integer.parseInt(req.getParameter("threshold"));
-        int inputFactor = Integer.parseInt(req.getParameter("inputFactor"));
+        int inputFactor = 3;
         boolean smartSizing = false;
         String smartSizingString = req.getParameter("smartSizing");
-        if (smartSizingString != null && smartSizingString.compareTo("on") == 0){
+        if (smartSizingString.compareTo("true") == 0){
             smartSizing = true;
         }
+        System.out.println("smart sizing is" + smartSizing);
         //begin making the collage
         CollageMaster master = new CollageMaster();
         ImagesService imgService = ImagesServiceFactory.getImagesService();

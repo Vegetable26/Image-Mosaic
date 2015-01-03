@@ -1,14 +1,22 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
-
+<style>
+    body, .site-wrapper{
+        background-image: none !important;
+        background-color: white !important;
+    }
+    .center{
+        text-align:center;
+    }
+</style>
 <t:template isApproved="${isApproved}" log="${log}">
     <jsp:attribute name="content">
         <div class = "container-fluid" style="background-color:rgba(50,50,50,0.5); color:white ">
             <div class="row">
                 <div class = center class="inner cover" style="text-align: left">
                     <h1 class = center> Getting Started </h1>
-                    <h3 style="text-align: left; padding-left: 30"> Introduction to Smartsizing</h3>
-                    <p style="padding:5 50"> Smartsizing lies at the core of the Image-Mosaic algorithm and can produce a
+                    <h3 style="text-align: left; padding-left: 30"> Introduction to Smart-Sizing</h3>
+                    <p style="padding:5 50"> Smart-sizing lies at the core of the Image-Mosaic algorithm and can produce a
                         more visually-diverse mosaic. The algorithm works by dynamically sizing the mosaic-images to capture
                         important features within the base image. Important features are represented by a
                         larger number of smaller sized mosaic images, while background features are represented by much larger
@@ -22,13 +30,13 @@
                 <div class="col-md-4 col-md-push-4">
                     <h4>Original Image</h4>
                     <a href="https://www.flickr.com/photos/deniwlp84/14451399403/" target="_blank">
-                        <img 	src= "images/Parrot.jpg" class = "img-responsive img-					thumbnail">
+                        <img 	src= "images/Parrot.jpg" class = "img-responsive img-thumbnail">
                     </a>
 
                 </div>
                 <div class="col-md-4 col-md-pull-4 col-sm-4">
                     <h4>Smart-Sized Mosaic</h4>
-                    <img 	src= "images/ParrotSmart.png" class = "img-responsive img-					thumbnail">
+                    <img 	src= "images/ParrotSmart.png" class = "img-responsive img-thumbnail">
 
                 </div>
                 <div class="col-md-4 col-sm-4">
@@ -58,13 +66,13 @@
                 <div class="col-md-4 col-md-push-4">
                     <h4>Original Image </h4>
                     <a href="https://www.flickr.com/photos/deniwlp84/14427944351/" target="_blank">
-                        <img src="images/Bird.jpg" class = "img-responsive img-					thumbnail">
+                        <img src="images/Bird.jpg" class = "img-responsive img-thumbnail">
                     </a>
 
                 </div>
                 <div class="col-md-4 col-md-pull-4 col-sm-4">
                     <h4>Depth 6</h4>
-                    <img 	src= "images/LowResBird.png" class = "img-responsive img-					thumbnail">
+                    <img 	src= "images/LowResBird.png" class = "img-responsive img-thumbnail">
 
                 </div>
                 <div class="col-md-4 col-sm-4">
@@ -74,7 +82,7 @@
 
 
             </div>
-            <p class="center">Bird's Park by Deni Williams: https://www.flickr.com/photos/deniwlp84/14427944351/</p>
+            <p class="center"><a href="https://www.flickr.com/photos/deniwlp84/14427944351/">Bird's Park</a> by Deni Williams </p>
 
             <div class="row">
                 <div class = center class="inner cover" style="text-align: left">
@@ -97,7 +105,7 @@
                 </div>
                 <div class="col-md-4 col-md-pull-4 col-sm-4">
                     <h4>Threshold: 500</h4>
-                    <img 	src= "images/LowThreshDrums.png" class = "img-responsive img-					thumbnail">
+                    <img 	src= "images/LowThreshDrums.png" class = "img-responsive img-thumbnail">
 
                 </div>
                 <div class="col-md-4 col-sm-4">
@@ -105,13 +113,9 @@
                     <img 	src= "images/HighThresh.png" class = "img-responsive img-thumbnail">
                 </div>
             </div>
-            <p class="center">Ladakh Festival 2013 by Dietmar Temps: https://www.flickr.com/photos/deepblue66/12384033395/</p>
+            <p class="center"><a href="https://www.flickr.com/photos/deepblue66/12384033395/">Ladakh Festival 2013 by Dietmar Temps</a></p>
         </div>
 
-        <style>
-            .center{
-                text-align:center;
-            }
-        </style>
+
     </jsp:attribute>
 </t:template>
