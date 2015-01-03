@@ -8,12 +8,14 @@ com/google/appengine/demos/ImageCollage/CheckLogInStatus.class
 com/google/appengine/demos/ImageCollage/Collage.class
 com/google/appengine/demos/ImageCollage/CollageMaster.class
 com/google/appengine/demos/ImageCollage/CrawlerServlet.class
-com/google/appengine/demos/ImageCollage/RunnableCollage.class
+com/google/appengine/demos/ImageCollage/CollageMaster$generateRow.class
 com/google/appengine/demos/ImageCollage/ProcessedImage.class
 com/google/appengine/demos/ImageCollage/HomeServlet.class
 com/google/appengine/demos/ImageCollage/Crawler.class
+com/google/appengine/demos/ImageCollage/Transformer.class
 com/google/appengine/demos/ImageCollage/MakeMosaicServlet$URLAndAttribute.class
 com/google/appengine/demos/ImageCollage/EmailCollage.class
+com/google/appengine/demos/ImageCollage/Collage$biCollage.class
 com/google/appengine/demos/ImageCollage/IProcessedImage.class
 com/google/appengine/demos/ImageCollage/PopulateIndexServlet.class
 com/google/appengine/demos/ImageCollage/MakeMosaicServlet.class

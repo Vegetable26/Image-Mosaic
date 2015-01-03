@@ -3,23 +3,17 @@ package com.google.appengine.demos.ImageCollage;
  /*
  Update: 12/24
  Added in the scaled image cache
-
  ProcessedImage: Stores an image and its following data:
-
     - Author userName *
     - Author id *
     - Thumbnail URL *
     - Dimensions
     - RGB variance
     - RGB histogram
-
  * not stored for ProcessedImages that are constructed from Collage
-
  Also provides the following transformations:
-
     - Crop image
     - Rescale image
-
  */
 
 import com.flickr4java.flickr.Flickr;
@@ -44,6 +38,7 @@ public class ProcessedImage{
     private String userId; // Artist's Flickr id
     private HashMap<String, Image> cache = new HashMap<String, Image>();
     private String title; //title of the photo
+    private Transformer transformer; // Wraps the Google Image API
 
     /*
     Constructs a ProcessedImage from an image Url.
@@ -62,7 +57,6 @@ public class ProcessedImage{
     /*
     Constructs a ProcessedImage from a Flickr.photo object
     Called primarily from Crawler
-
     Inputs: photo: Flickr photo
     f: Flickr object
      */
@@ -79,7 +73,6 @@ public class ProcessedImage{
     /*
     Constructs a ProcessedImage from a photo and its meta-data
     Called primarily from Collage.findImage() and gets the image directly from the Database
-
     Input: photo: Google image object containing the photo
     url: Image's thumbnail url
     userName: Artist's username
@@ -182,7 +175,6 @@ public class ProcessedImage{
 
     /*
     Returns a copy of a subsection of the current image
-
     Inputs: firstX: X coordinate of the upper-left corner of the subsection
     firstY: Y coordinate of the upper-left corner of the subsection
     partitionHeight: Height of the subsection
@@ -194,13 +186,14 @@ public class ProcessedImage{
         // Defines the crop within the percentage values of the coordinates, according to the Google Image API
         Image cropped = ImagesServiceFactory.makeImage(img.getImageData());
         // Returns a new ProcessedImage that is a cropped copy of this ProcessedImage
-        return new ProcessedImage(imagesService.applyTransform(cropBlock, cropped),null,null, null, null);
+        ProcessedImage returnVal = new ProcessedImage(transformer.transform(cropped,cropBlock,0),null,null, null, null);
+        returnVal.setTransformer(transformer);
+        return returnVal;
     }
 
     /*
     Returns a scaled copy of the image. First checks the cache for a scaled image of the same size. If the image
     is not in the cache, copy the image data, rescale, and add to the cache.
-
     Inputs:x: New width of the image
     y: new height of the image
     depth: Recursion level of the required image
@@ -213,15 +206,15 @@ public class ProcessedImage{
         }
         else{ // Else we must re-scale the images ourselves
             Image toScale = ImagesServiceFactory.makeImage(img.getImageData()); // Transform mutates the input image
-            if(x*y>22500){ // If the required scaled image is much larger than a thumbnail...
+            if(x*y>15000){ // If the required scaled image is much larger than a thumbnail...
                 try {
                     toScale = readImage(getSmallUrl()); // Download a higher resolution version of the image
                 }catch(IOException e){ // If there is an IOException, just use the thumbnail image
-
+                    e.printStackTrace();
                 }
             }
             Transform scaleTransform = ImagesServiceFactory.makeResize(x, y, true); // Re-scale the image
-            Image scaled = imagesService.applyTransform(scaleTransform, toScale);
+            Image scaled = transformer.transform(toScale,scaleTransform,0);
             cache.put(key,scaled); // Place the scaled image into the cache
             return scaled; // Return the scaled image
         }
@@ -291,5 +284,8 @@ public class ProcessedImage{
 
     public String getTitle(){
         return title;
+    }
+    public void setTransformer(Transformer transformer){
+        this.transformer = transformer;
     }
 }

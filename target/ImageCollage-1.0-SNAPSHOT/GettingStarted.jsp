@@ -47,7 +47,7 @@
 
 
             </div>
-            <p class="center">Blue-and-gold Macaw by Deni Williams: https://www.flickr.com/photos/deniwlp84/14451399403/</p>
+            <p class="center"><a href="https://www.flickr.com/photos/deniwlp84/14451399403/">Blue-and-gold Macaw</a> by Deni Williams </p>
 
             <div class="row">
                 <div class = center class="inner cover" style="text-align: left">

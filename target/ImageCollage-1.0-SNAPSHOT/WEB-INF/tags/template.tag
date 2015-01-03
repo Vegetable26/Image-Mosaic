@@ -96,22 +96,16 @@
 
 
 
-
-            </div>
+    <footer class="footer">
+        <div class="container">
+            <p style="line-height: 60px">&copy; 2014-2015</a>, Joseph Hwang and Nicholas Kwon.</p>
+        </div>
+    </footer>
+</div>
 
 <div class="modal"></div>
 
-<footer class="footer">
-    <div class="container">
-        <p style="line-height: 60px">&copy; 2014-2015</a>, Joseph Hwang and Nicholas Kwon.</p>
-    </div>
-</footer>
-<!-- Bootstrap core JavaScript
-================================================== -->
-<!-- Placed at the end of the document so the pages load faster -->
-<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-<!--<script src="../../assets/js/docs.min.js"></script>-->
-<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-<!--<script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>-->
+
+
 </body>
 </html>

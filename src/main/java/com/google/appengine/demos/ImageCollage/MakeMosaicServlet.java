@@ -40,7 +40,7 @@ public class MakeMosaicServlet extends HttpServlet {
             req.setAttribute("isApproved", status[0]);
             req.setAttribute("log", status[1]);
             req.setAttribute("action", blobstoreService.createUploadUrl("/make_mosaic"));
-            req.getRequestDispatcher("MakeCollage.jsp").forward(req, resp);
+            req.getRequestDispatcher("MakeMosaic.jsp").forward(req, resp);
         }
         catch (Exception e){
             e.printStackTrace();
@@ -69,8 +69,9 @@ public class MakeMosaicServlet extends HttpServlet {
         CollageMaster master = new CollageMaster();
         ImagesService imgService = ImagesServiceFactory.getImagesService();
         Image collage = master.getCollage(imgService, blobKey, depth, threshold, inputFactor, smartSizing);
+
         //get the url for collage by adding it to the blobstore
-        String url = imgService.getServingUrl(ServingUrlOptions.Builder.withBlobKey(toBlobstore(collage))) + "=s1600";
+        String url = imgService.getServingUrl(ServingUrlOptions.Builder.withBlobKey(toBlobstore(collage)))+"=s1600";
         //now get the url and attribute wrapped together in an object in JSON format
         String urlAndAttribute = new Gson().toJson(new URLAndAttribute(url, master.getAttributionTable(), master.getX(), master.getY()));
         //write the urlAndAttribute to the response
@@ -87,6 +88,9 @@ public class MakeMosaicServlet extends HttpServlet {
     returns the BlobKey for uploadMe
      */
     public static BlobKey toBlobstore(Image uploadMe){
+        if (uploadMe == null){
+            System.out.println("what the fuck the image is null??????");
+        }
         try {
             // Get a file service
             FileService fileService = FileServiceFactory.getFileService();

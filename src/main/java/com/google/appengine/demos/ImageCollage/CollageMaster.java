@@ -1,21 +1,18 @@
 package com.google.appengine.demos.ImageCollage;
 
 /*
-
  Update: 12/24
- Added in a cache for scaled images
- Created the class
- Jpeg and PNG offer almost the exact same performance
-
+ Added general ratios: 4x4, 3x5, 2x6
  CollageMaster: Controls the many Collage threads that are called on an image. Produces the composited collage and
  also produces the composited AttributionTable for the collage.
-
 */
 
 import com.google.appengine.api.ThreadManager;
 import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.blobstore.BlobstoreInputStream;
 import com.google.appengine.api.images.*;
+import com.google.apphosting.api.ApiProxy;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,16 +35,16 @@ public class CollageMaster {
 
     // Caches scaled images to reduce the amount of time using Image.scale()
 
+    private Image image;
+    private byte[] imageData;
+
     /*
-
     Controls the execution of multiple threads that will create the overall collage
-
     Inputs: imgService: Google API ImagesService
     blobKey: Blob key corresponding to the image to be collaged
     depth: Maximum recursion depth of the collage
     threshold: Variance threshhold of the collage
     inputFactor: The scaling factor of the collage
-
      */
 
     public Image getCollage(ImagesService imgService, BlobKey blobKey, int depth, int threshold, int inputFactor, boolean smartSize){
@@ -59,38 +56,27 @@ public class CollageMaster {
 
             Crawler crawler = new Crawler(); // Provides access to the image database
             crawler.buildIndex(); // Builds the LSH M-Tree for the images
-            byte[] imageData = getData(blobKey); // Finds the base image submitted by the user
-            Image image = ImagesServiceFactory.makeImage(imageData);
-            ThreadFactory tf = ThreadManager.currentRequestThreadFactory();
+            Transformer transformer = new Transformer(imgService);
+            imageData = getData(blobKey); // Finds the base image submitted by the user
+            image = ImagesServiceFactory.makeImage(imageData);
             width = image.getWidth(); // Dimensions of the base-image
             height = image.getHeight();
-            int limit = 1000000; // Automatically rescales base-images that are larger than this pixel threshold
-            if (height*width > limit){  // Scales the image if the current image is too high resolution
-                double scalingFactor = Math.pow((double)limit/(height*width),.5); // Rescales the image to "limit" number of pixels
-                Transform scaleTransform = ImagesServiceFactory.makeResize((int)(width*scalingFactor), (int)(height*scalingFactor));
-                image = imgService.applyTransform(scaleTransform, image);
-                imageData = image.getImageData();
-                height = image.getHeight();
-                width = image.getWidth();
-            }
-            ArrayList<RunnableCollage> subCollages = new ArrayList<>(); // ArrayList of the subCollage threads
+            int[] initSplit = findRatio() ; // Splits the base-image into initSplit[0] x initSplit[1] smaller images
+            rescaleImage(initSplit,transformer);
+            ThreadFactory tf = ThreadManager.currentRequestThreadFactory();
+            ArrayList<Collage> subCollages = new ArrayList<Collage>(); // ArrayList of the subCollage threads
             ArrayList<Thread> threads = new ArrayList<>();
-            int initSplit = 4; // Splits the base-image into initSplit x initSplit smaller images
-            double prop = 1.0 / initSplit;
-            for (int j = 0; j < initSplit; j++) { // Create 4 rows
-                double y = (double)j / initSplit;
-                for (int i = 0; i < initSplit; i++) { // Create 4 columns
-                    image = ImagesServiceFactory.makeImage(imageData);
-                    //System.out.println("on block "+j+", "+i);
-                    double x = (double)i / initSplit;
-                    Transform crop = ImagesServiceFactory.makeCrop(x, y, x + prop, y + prop); // Crop the sub-image from the base-image
-                    RunnableCollage subCollage = new RunnableCollage(imgService.applyTransform(crop, image),
-                            depth - 3, threshold, inputFactor, crawler, (int)(x*width), (int)(y*height), collageTimer, imageCache ,smartSize);
-                    subCollages.add(subCollage); //create the object of FutureTask
-                    Thread t = tf.newThread(subCollage); //Create a thread object using the task object created
-                    t.start(); // Begin the thread as soon as possible
-                    threads.add(t);
-                }
+            ArrayList<Thread> rows = new ArrayList<Thread>();
+
+            //System.out.println("Initial split is"+initSplit[0]+","+initSplit[1]);
+
+            for (int i = 0; i < initSplit[0]; i++) { // Create 4 rows
+                Thread t = tf.newThread(new generateRow(i,initSplit,depth,threshold,crawler,subCollages,threads,tf,smartSize)); //Create a thread object using the task object created
+                t.start(); // Begin the thread as soon as possible
+                rows.add(t);
+            }
+            for(Thread thread: rows){
+                thread.join();
             }
             int z = 0;
             for (Thread thread : threads){ // Compile the completed threads
@@ -99,31 +85,29 @@ public class CollageMaster {
                 z++;
             }
             ArrayList<Composite> composites = new ArrayList<>();
-            for (int n = 0; n < initSplit; n++) { // Loop over the 4 rows
-                for (int m = 0; m < initSplit; m++) { // Loop over the 4 columns
-                    composites.add(ImagesServiceFactory.makeComposite(subCollages.get(n * initSplit + m).getCollage(),
-                            (int) (m*inputFactor / (double)initSplit * width), (int) (n*inputFactor / (double)initSplit * height), 1f, Composite.Anchor.TOP_LEFT));
+            ImagesService.OutputEncoding output = ImagesService.OutputEncoding.PNG; // We want to return the image as a JPEG
+            for(Collage collage: subCollages){
+                composites.add(ImagesServiceFactory.makeComposite(collage.getCollage(),
+                        collage.getInitX(),collage.getInitY(), 1f, Composite.Anchor.TOP_LEFT));
 
-                    // Composite the 16 sub-collages
+                // Composite the 16 sub-collages
 
-                    attributionTable.addAll(subCollages.get(n * initSplit + m).getAttributionTable());
+                attributionTable.addAll(collage.getAttributionTable());
 
-                    // Compile the attribution cells from each of the collages
+                // Compile the attribution cells from each of the collages
 
-                }
             }
-            return imgService.composite(composites, width * inputFactor, height * inputFactor, 0);
+            return imgService.composite(composites, width * inputFactor, height * inputFactor, 0,output);
         }
         catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
 
     }
 
     /*
-
     Reads the image data from a blobkey
-
     */
 
     private byte[] getData(BlobKey blobKey) {
@@ -140,7 +124,7 @@ public class CollageMaster {
             }
             oldImageData = bais.toByteArray();
         } catch (IOException e) {
-
+            e.printStackTrace();
         }
         return oldImageData;
 
@@ -156,8 +140,95 @@ public class CollageMaster {
         return height;
     }
 
+    /*
+    Fits the base image to one of the predetermined photo ratios. The returned int array contains
+    the number of width, then height partitions.
+     */
 
+    public int[] findRatio(){
 
+        double ratio = ((double)width)/height;
+        if(ratio<0.14){
+            return new int[]{2,7};
+        }
+        if(ratio < 0.333){
+            return new int[]{3,5};
+        }
+        else if(ratio < 3){
+            return new int[]{4,4};
+        }
+        else if(ratio<7){
+            return new int[]{5,3};
+        }
+        else{
+            return new int[]{7,2};
+        }
 
+    }
 
+    private void rescaleImage(int[] newScale, Transformer transformer){
+
+        int limit = 1000000; // Automatically rescales base-images that are larger than this pixel threshold
+        double scalingFactor = 1; // This variable is obsolete
+        if(width*height>limit){
+            scalingFactor = Math.pow((double)limit/(height*width),.5); // Rescales the image to "limit" number of pixels
+        }
+        int xScalingFactor = (int)(Math.ceil(scalingFactor*width/newScale[0]))*newScale[0];
+        int yScalingFactor = (int)(Math.ceil(scalingFactor*height/newScale[1]))*newScale[1];
+
+        // Rounds the width and height to match the dimensions, so the partitions are of equal sizes
+
+        Transform scaleTransform = ImagesServiceFactory.makeResize(xScalingFactor, yScalingFactor); // Rescales the image
+        image = transformer.transform(image,scaleTransform,0);
+        imageData = image.getImageData(); // Copies the new image data
+        width = image.getWidth(); // Dimensions of the base-image
+        height = image.getHeight();
+
+    }
+    private class generateRow implements Runnable{
+        private int i;
+        private int[] initSplit;
+        private int depth;
+        private Crawler crawler;
+        private ArrayList<Collage> subCollages = new ArrayList<Collage>(); // ArrayList of the subCollage threads
+        private ArrayList<Thread> threads = new ArrayList<Thread>();
+        private Transformer transformer = new Transformer(ImagesServiceFactory.getImagesService());
+        private int threshold;
+        private ThreadFactory tf;
+        private boolean smartSize;
+        public generateRow(int i, int[] initSplit, int depth, int threshold, Crawler crawler, ArrayList<Collage> subCollages,  ArrayList<Thread> threads, ThreadFactory tf, boolean smartSize){
+            this.i = i;
+            this.initSplit = initSplit;
+            this.depth = depth;
+            this.crawler = crawler;
+            this.subCollages = subCollages;
+            this.threads = threads;
+            this.threshold = threshold;
+            this.tf = tf;
+            this.smartSize = smartSize;
+        }
+        public void run(){
+            double x = (double)i / initSplit[0];
+            double xProp = 1.0 / initSplit[0];
+            double yProp = 1.0 / initSplit[1];
+            Image row = ImagesServiceFactory.makeImage(imageData); // Copies the base image
+            Transform crop = ImagesServiceFactory.makeCrop(x, 0, x + xProp, 1);
+            row = transformer.transform(row,crop,0); // Creates a copy of the specified row
+            for (int j = 0; j < initSplit[1]; j++) { // Loops over the columns
+                Image newImage = ImagesServiceFactory.makeImage(row.getImageData()); // Copies the base-row each time
+                double y = (double)j / initSplit[1];
+
+                //System.out.println("on block "+i+", "+j+"time is "+ System.nanoTime()/Math.pow(10,9));
+
+                Transform crop2 = ImagesServiceFactory.makeCrop(0, y, 1, y + yProp); // Crop the sub-image from the base-image
+                Collage subCollage = new Collage(transformer.transform(newImage,crop2,0),
+                        depth - 3, threshold, 1, crawler, (int) (x * width), (int) (y * height), collageTimer, imageCache, tf,smartSize);
+                subCollages.add(subCollage); //create the object of FutureTask
+                Thread t = tf.newThread(subCollage); //Create a thread object using the task object created
+                t.start(); // Begin the thread as soon as possible
+                threads.add(t); // Adds the thread to the list of threads
+
+            }
+        }
+    }
 }

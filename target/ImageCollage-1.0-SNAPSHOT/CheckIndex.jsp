@@ -98,8 +98,8 @@
                         });
                         $('input').hide();
                         var $submit = $('<input>');  //make the submit button
-                        $submit.attr('type', 'submit');
-                        $submit.attr('value', 'Delete checked images');
+                        $submit.attr('type', 'submit').addClass('btn btn-info');
+                        $submit.attr('value', 'Delete');
                         $submit.appendTo('#deleteImgs');
                     }
                 });
