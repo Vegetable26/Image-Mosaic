@@ -1,7 +1,12 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <link href="../../stylesheets/LoadingGif.css" rel="stylesheet">
-
+<style>
+    .site-wrapper{
+        background-color: rgba(50,50,50,0.5);
+        color: white;
+    }
+</style>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <t:template isApproved="${isApproved}" log="${log}">
     <jsp:attribute name="scripts">
@@ -34,6 +39,7 @@
 
             <div class="cover-container">
                 <div class="inner cover">
+                    <h1>Populate Index</h1>
                     <div class="col-sm-12">
                         <div id="alert" class="alert alert-success">
                             <span class='glyphicon glyphicon-floppy-saved'></span><strong> Download complete</strong>
@@ -47,7 +53,7 @@
                                 <label for="howMany">How many images should we download?</label>
                                 <div><input class="form-control" type="number" name="howMany" id="howMany" min="1" max="100" required></div>
                             </div>
-                        <div><input id="submit" type="submit" class="btn btn-default" value="Download photos"></div>
+                        <div><input id="submit" type="submit" class="btn btn-info" value="Download photos"></div>
                         </form>
                     </div>
                 </div>

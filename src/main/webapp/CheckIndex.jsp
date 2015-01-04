@@ -74,7 +74,7 @@
                     type: "GET",
                     success: function (responseJson) {
                         $('#picRow').html("");
-                        $('#deleteImgs').prepend("<br><i>Check the images that you want to delete.</i><br>");
+                        $('#msg').html("<br><i>Check the images that you want to delete.</i><br>");
                         //get the images since time using crawler servlet
                         $.each(responseJson, function (index, item) {  //for each image since time...
                             var split = item.split(",");
@@ -136,7 +136,7 @@
     <jsp:attribute name="content">
         <div class="container-fluid" style="padding-left: 20px; padding-right: 20px">
             <div class="crawlerSearches" style="padding-top: 10px">
-                <p>Click on one of the rows below to see the images from that search</p>
+                <p><i>Click on one of the rows below to see the images from that search</i></p>
                 <table id="crawlerSearches" class="table table-hover">
                     <thead>
                         <tr>
@@ -150,6 +150,7 @@
             </div>
 
             <form id="deleteImgs" action="/crawl" method="GET">
+                    <p id="msg"></p>
                     <div class="row" id="picRow">
                     </div>
             </form>

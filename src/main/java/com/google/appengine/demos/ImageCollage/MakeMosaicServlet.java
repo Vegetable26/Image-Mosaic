@@ -58,7 +58,7 @@ public class MakeMosaicServlet extends HttpServlet {
         //get the rest of the parameters
         int depth = Integer.parseInt(req.getParameter("depth"));
         int threshold = Integer.parseInt(req.getParameter("threshold"));
-        int inputFactor = 3;
+        int inputFactor = 1;
         boolean smartSizing = false;
         String smartSizingString = req.getParameter("smartSizing");
         if (smartSizingString.compareTo("true") == 0){
@@ -75,6 +75,7 @@ public class MakeMosaicServlet extends HttpServlet {
         //now get the url and attribute wrapped together in an object in JSON format
         String urlAndAttribute = new Gson().toJson(new URLAndAttribute(url, master.getAttributionTable(), master.getX(), master.getY()));
         //write the urlAndAttribute to the response
+        //System.out.println("Json is"+ urlAndAttribute);
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
         blobstoreService.delete(blobKey);
@@ -135,6 +136,8 @@ public class MakeMosaicServlet extends HttpServlet {
             this.attributionTable = attributes;
             this.width = width;
             this.height = height;
+            System.out.println("width is"+width);
+            System.out.println("height is"+height);
         }
     }
 }

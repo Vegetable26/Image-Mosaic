@@ -18,22 +18,20 @@
     <link rel="icon" href="../../favicon.ico">
 
     <title>Image Mosaic</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js" async></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js" async></script>
 
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
-
-
+    <![endif]-->
     <!-- Custom styles for this template -->
     <link href="../../stylesheets/cover.css" rel="stylesheet">
     <link href="../../stylesheets/LoadingGif.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
 
-    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 
-    <![endif]-->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 
     <jsp:invoke fragment="scripts"/>
 
@@ -46,7 +44,7 @@
             $(document).ajaxStop(function () {
                 $body.removeClass("loading");
             });
-            var height = $('#navbar').height();
+            var height = $('.navbar-header').height();
             $body.css("padding-top", height+"px");
         });
     </script>
@@ -85,7 +83,7 @@
                             out.println("<li><a href=\"" + log +  "\">Log Out</a></li>");
                         }
                         else{
-                            out.println("<li><a href=\"" + log +  "\">Approved User?<br>Log In</a></li>");
+                            out.println("<li><a href=\"" + log +  "\">Approved User? Log In</a></li>");
                         }
                     %>
                 </ul>
@@ -96,16 +94,16 @@
 
 
 
-    <footer class="footer">
-        <div class="container">
-            <p style="line-height: 60px">&copy; 2014-2015</a>, Joseph Hwang and Nicholas Kwon.</p>
-        </div>
-    </footer>
+
 </div>
 
-<div class="modal"></div>
+<div class="modal-loading"></div>
 
-
+<footer class="footer">
+    <div class="container" style="height:60px">
+        <p style="line-height: 60px; margin-bottom:0px">&copy; 2014-2015, Joseph Hwang and Nicholas Kwon.</p>
+    </div>
+</footer>
 
 </body>
 </html>

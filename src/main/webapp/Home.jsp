@@ -1,5 +1,12 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
+<style>
+    .site-wrapper{
+        background-color: rgba(50,50,50,0.5);
+        color: white;
+    }
+</style>
+
 <t:template isApproved="${isApproved}" log="${log}">
     <jsp:attribute name="content">
         <div class="site-wrapper-inner">
