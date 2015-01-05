@@ -30,8 +30,8 @@ It can also crawl the datastore for thumbnails that are most similar to an input
  */
 public class Crawler {
     //authentication for flickr API
-    private String apiKey = "c3916472c30d567c38898c61ee7d0638";
-    private String sharedSecret = "06cd65d9183f0d70";
+    private String apiKey = "";
+    private String sharedSecret = "";
     //flickr object
     private Flickr f;
     //object to search flickr
